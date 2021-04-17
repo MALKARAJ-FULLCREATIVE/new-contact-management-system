@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -175,14 +176,19 @@ public class ContactManagement extends HttpServlet  {
 		ContactDao contactDao=new ContactDaoImplementation();
 		JSONObject obj=contactDao.displayContact(pathInfo,true);
 		response.setStatus(obj.getInt("code"));
-		  response.getWriter().print(obj);
-		
+		response.setCharacterEncoding("UTF-8");
+	    response.getWriter().print(obj);
 	}
 	else {
 	ContactDao contactDao=new ContactDaoImplementation();
 		JSONObject obj=contactDao.displayContact(pathInfo,false);
 		response.setStatus(obj.getInt("code"));
-		response.getWriter().print(obj);
+		response.setCharacterEncoding("UTF-8");
+		
+		String name = obj.toString();
+		 response.getWriter().print(obj);
+		 
+		
 		
 		 
 	}
