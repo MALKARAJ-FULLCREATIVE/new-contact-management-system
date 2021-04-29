@@ -119,10 +119,6 @@ border-style: dotted;
 
 
 
-<script src="filejs.js"></script>
-
-
-
 
 
 
@@ -131,22 +127,29 @@ border-style: dotted;
 
 
 
+<style>
+li{
+list-style-type:none;
 
+}
+
+</style>
 
 
 <body onload="getContact()">
 
 
 
-<div   id="container " class="flex-container">
+<div   id="container" class="flex-container">
   <div id="contact" class="flex-item-left"> </div>
-  
   <div id="detail" class="flex-item-right"> </div>
+ 
 </div>
 
 
 
 <div class="popup" id="popup-1">
+
   <div class="overlay"></div>
   <div class="content">
     <div class="close-btn" onclick="togglePopup()">&times;</div>
@@ -155,9 +158,9 @@ border-style: dotted;
 
 firstName:     <input id="firstid"  name="firstName" required /><br/>
 lastName:             <input id="lastid" type="text" name="lastName"/><br/>
-addressName:   <input id="addressid" type="text" name="address"/><br/>
+address:   <input id="addressid" type="text" name="address"/><br/>
 
-<div id="container">
+<div id="container1">
 contactType:   <select id="selectid" name="contactType" class="ex">
 	<option value="phone">    phone 
  	<option value="email">    email     </option>
@@ -172,19 +175,33 @@ contactType:   <select id="selectid" name="contactType" class="ex">
  <input type="button" value="submit" onclick="addContact();" />
  
 
+ 
+ 
+
 
 </form>
     
     
   </div>
 </div>
+
+
+
+
+
+
+
  <br/>
-<img src= "images/plus.png" onclick="togglePopup()" width="50" height="40"> 
+<img src= "images/plusnew.jpg" onclick="togglePopup()" width="40" height="40"> 
+
+<img id="delete" src= "images/delete.png" onclick="getDeletedContact()" width="40" height="40"> 
+ <input type="button" value="logout" onclick="logoutfn()"/>
+
+
+<div id="new"></div>
 	            
 
-
-
-
+<script type="text/javascript" src="newfile1.js"></script>
 
 </body>
 </html>

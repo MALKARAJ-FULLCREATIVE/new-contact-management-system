@@ -11,11 +11,11 @@ public interface ContactDao  {
 	
 	
 	
-	public abstract String addContact(Contact c);
-	public abstract JSONObject addContactWithDetails(JSONObject jsonobject);
-    public abstract JSONObject updateContactWithDetails(JSONObject jsonObject,String contact_id);
-	public abstract JSONObject displayContact(String pathInfo,boolean val);
-	public abstract JSONObject deleteContact(String contact_id);
+	public abstract String addContact(Contact c,String user_id);
+	public abstract JSONObject addContactWithDetails(JSONObject jsonobject,String user_id);
+    public abstract JSONObject updateContactWithDetails(JSONObject jsonObject,String contact_id,String user_id);
+	public abstract JSONObject displayContact(String pathInfo,boolean val,String user_id);
+	public abstract JSONObject deleteContact(String contact_id,String user_id);
 	
 	
 	

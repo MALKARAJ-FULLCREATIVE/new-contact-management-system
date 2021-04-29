@@ -1,0 +1,25 @@
+{
+  "name": "contactproject",
+  "version": "1.0.0",
+  "description": "schema for contactmanagement",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+    
+    
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MALKARAJ-FULLCREATIVE/new-contact-management-system.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MALKARAJ-FULLCREATIVE/new-contact-management-system/issues"
+  },
+  "homepage": "https://github.com/MALKARAJ-FULLCREATIVE/new-contact-management-system#readme",
+  "dependencies": {
+    "jest": "^26.6.3"
+  }
+}

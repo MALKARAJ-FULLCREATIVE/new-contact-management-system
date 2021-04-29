@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.*;
 
 import org.json.JSONArray;
@@ -112,10 +113,15 @@ public class ContactManagement extends HttpServlet  {
 
 		  String str=jb.toString();
 		  JSONObject jsonobject= new JSONObject(str);
+		 
+		  HttpSession session=request.getSession(false);
+		  String user_id=session.getAttribute("user_id").toString();
+		  
 		  ContactDao contactDao=new ContactDaoImplementation();
 		  
-		JSONObject obj= contactDao.addContactWithDetails(jsonobject);
+		JSONObject obj= contactDao.addContactWithDetails(jsonobject,user_id);
 			response.setStatus(obj.getInt("code"));
+		
 		  response.getWriter().print(obj);
 		  
 		
@@ -149,8 +155,12 @@ public class ContactManagement extends HttpServlet  {
 			  		
 			  	             
 			  				JSONObject jsonObject= new JSONObject(str);
+
+			  			  HttpSession session=request.getSession(false);
+			  			  String user_id=session.getAttribute("user_id").toString();
+			  			  
 			  				 ContactDao contactDao=new ContactDaoImplementation();
-			  			JSONObject obj=	contactDao.updateContactWithDetails(jsonObject,contact_id);
+			  			JSONObject obj=	contactDao.updateContactWithDetails(jsonObject,contact_id,user_id);
 			  			response.setStatus(obj.getInt("code") );
 			  			response.getWriter().print(obj);
 			  				
@@ -169,19 +179,21 @@ public class ContactManagement extends HttpServlet  {
 	   
 
 	String pathInfo=request.getPathInfo();
+	HttpSession session =request.getSession(false);
+	
 	
 	if(pathInfo!=null && pathInfo.contains("garbage"))
 	{
 		
 		ContactDao contactDao=new ContactDaoImplementation();
-		JSONObject obj=contactDao.displayContact(pathInfo,true);
+		JSONObject obj=contactDao.displayContact(pathInfo,true,session.getAttribute("user_id").toString());
 		response.setStatus(obj.getInt("code"));
 		response.setCharacterEncoding("UTF-8");
 	    response.getWriter().print(obj);
 	}
 	else {
 	ContactDao contactDao=new ContactDaoImplementation();
-		JSONObject obj=contactDao.displayContact(pathInfo,false);
+		JSONObject obj=contactDao.displayContact(pathInfo,false,session.getAttribute("user_id").toString());
 		response.setStatus(obj.getInt("code"));
 		response.setCharacterEncoding("UTF-8");
 		
@@ -203,8 +215,12 @@ public class ContactManagement extends HttpServlet  {
 		String path[]=pathInfo.split("/");
 		String contact_id=path[1];
 		
+		
+		  HttpSession session=request.getSession(false);
+		  String user_id=session.getAttribute("user_id").toString();
+			  
 			ContactDao contactDao=new ContactDaoImplementation();
-			JSONObject obj=contactDao.deleteContact(contact_id);
+			JSONObject obj=contactDao.deleteContact(contact_id,user_id);
 			response.setStatus(obj.getInt("code"));
 			response.getWriter().print(obj);
 			

@@ -13,6 +13,8 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -28,14 +30,33 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 	
 	DatastoreService datastore=DatastoreServiceFactory.getDatastoreService();
 	
+	
+	
+	
+	
 	@Override
-	public String addContact(Contact c) {
+	public String addContact(Contact c,String user_id) {
+
 		
 		
+		Key key=KeyFactory.createKey("User",user_id);
+		 Entity userEntity=null;
+		try {
+			userEntity = datastore.get(key);
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
-		Entity contactEntity=new Entity("Contact",c.getContact_id());
+		   
+      		
 		
+		Entity contactEntity=new Entity("Contact",c.getContact_id(),userEntity.getKey());
+ 
+	    
 		contactEntity.setProperty("firstName",c.getFirstName() );
+		contactEntity.setProperty("user_id", c.getUser_id());
 		contactEntity.setProperty("lastName",c.getLastName()); 
 		contactEntity.setProperty("address", c.getAddress());
 		contactEntity.setProperty("contact_id", c.getContact_id());
@@ -56,9 +77,14 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 	}
 
 	@Override
-	public String addDetail(Detail d,String contact_id) throws EntityNotFoundException {
+	public String addDetail(Detail d,String contact_id,String user_id) throws EntityNotFoundException {
 		// TODO Auto-generated method stub
-		Key key=KeyFactory.createKey("Contact",contact_id);
+		
+		Key key=new KeyFactory.Builder("User",user_id)
+					.addChild("Contact",contact_id)
+					 .getKey();
+		
+		//Key key=KeyFactory.createKey("Contact",contact_id);
 		 Entity contactEntity=datastore.get(key);
 		 
 		 
@@ -80,7 +106,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 	}
 
 	@Override
-	public JSONObject addContactWithDetails(JSONObject  jsonobject)
+	public JSONObject addContactWithDetails(JSONObject  jsonobject,String user_id)
 	{
 		
 		
@@ -111,7 +137,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 		  boolean isValidPhone=false;
 		  JSONArray jsonArray;
 		  JSONObject createJson=new JSONObject();
-		  
+		  createJson.put("user_id", user_id);
 		  createJson.put("firstName",firstName);
 		  createJson.put("lastName", lastName);
 		  
@@ -179,7 +205,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 			    	 jsonArray=jsoncontact.getJSONArray("detail");
 			    	
 			    	
-			    	Contact contact=new Contact(firstName,lastName,address);
+			    	Contact contact=new Contact(firstName,lastName,address,user_id);
 			        createJson.put("contact_id",contact.getContact_id());    	
 			    	createJson.put("created",contact.getCreatedDate());
 			    	
@@ -201,7 +227,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 			    		 	    	 		isValidEmail=  Validation.isValidEmail(value);
 			            	        }
 			    		 	    	if(contactType.equals("phone")) 
-			    		 	    	{
+			    		 	    	{ 
 			    		 	    	 		isValidPhone=Validation.isValidNumber(value);
 			    		 	    	}
 			    		 	    	
@@ -214,9 +240,9 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 			    		 	    	    	jsonArray.getJSONObject(i).put("detail_id",detail.getDetail_id());
 			    		 	    	    	jsonArray.getJSONObject(i).put("created", detail.getCreatedDate());
 			    		 	    	    	ContactDaoImplementation c=new ContactDaoImplementation();
-			    		 	    	    	c.addContact(contact);
+			    		 	    	    	c.addContact(contact,user_id);
 			    		 	    	    	try {
-			    		 	    	    		c.addDetail(detail, contact.getContact_id());
+			    		 	    	    		c.addDetail(detail, contact.getContact_id(),user_id);
 			    		 	    	    	} catch (EntityNotFoundException e) {
 			    		 	    	    		JSONObject obj=new JSONObject();
 			    		 	    	    		// response.setStatus(400);
@@ -346,7 +372,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 	}
 
 	@Override
-	public JSONObject updateContactWithDetails(JSONObject jsonObject,String contact_id) {
+	public JSONObject updateContactWithDetails(JSONObject jsonObject,String contact_id,String user_id) {
 
 			JSONObject createJson=new JSONObject();
 			
@@ -357,7 +383,12 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 			//String contact_id=jsonContact.getString("contact_id");
 			createJson.put("contact_id",contact_id);
         
-			Key key=KeyFactory.createKey("Contact",contact_id);
+			
+			Key key=new KeyFactory.Builder("User",user_id)
+			.addChild("Contact", contact_id)
+			 .getKey();
+			
+			//Key key=KeyFactory.createKey("Contact",contact_id);
 			try {
 				 contactEntity= datastore.get(key);
 				 if(contactEntity.getProperty("isDeleted").equals(true))
@@ -468,9 +499,12 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
             		String detailContact_id=arr.getJSONObject(i).getString("contact_id");
             		
             		String detail_id =arr.getJSONObject(i).getString("detail_id");
-            		Key k=new KeyFactory.Builder("Contact", detailContact_id)
-    				        .addChild("Detail",detail_id)
-    				        .getKey();
+            		
+            		Key k=new KeyFactory.Builder("User",user_id)
+            				.addChild("Contact", detailContact_id)
+            				 .addChild("Detail", detail_id)
+            				 .getKey();
+            				
             	   
 					try {
 						detailEntity = datastore.get(k);
@@ -485,7 +519,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
  	    	    	//	response.getWriter().print(obj);
  	    	    		return obj;
 					}
-				  if(arr.getJSONObject(i).has("contactType")==false)
+				  if(arr.getJSONObject(i).has("contactType")==false) 
 					  {
 						  String contactType=detailEntity.getProperty("contactType").toString();
 						  String s=arr.getJSONObject(i).getString("value");
@@ -593,7 +627,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 			 contact.put("lastName", contactEntity.getProperty("lastName"));
 			 contact.put("address", contactEntity.getProperty("address"));
 			 contact.put("contact_id",contactEntity.getProperty("contact_id"));
-			 
+			 contact.put("user_id", contactEntity.getProperty("user_id"));
 			 d= Long.parseLong(contactEntity.getProperty("created").toString());
 	 	      date = new Date(d);
 	 	      contact.put("created",date);
@@ -605,7 +639,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 			 Filter propertyFilter =
 				        new FilterPredicate("isDeleted", FilterOperator.EQUAL,val );
 			  
- Query qp= new Query("Detail").setAncestor(contactEntity.getKey()).addSort("updated", SortDirection.DESCENDING).setFilter(propertyFilter);
+	Query qp= new Query("Detail").setAncestor(contactEntity.getKey()).addSort("updated", SortDirection.DESCENDING).setFilter(propertyFilter);
 			 for(Entity  detailEntity: datastore.prepare(qp).asIterable())
 			 {
 				 	 JSONObject detail=new JSONObject();
@@ -637,7 +671,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 	}
 
 	@Override
-	public JSONObject displayContact(String pathInfo,boolean val) {
+	public JSONObject displayContact(String pathInfo,boolean val,String user_id) {
 		// TODO Auto-generated method stub
 		JSONArray contactList=new JSONArray();
 	     long d;
@@ -675,10 +709,15 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 			  
 		  }
 		  
+		  
+		  Filter filter1=new FilterPredicate("user_id",FilterOperator.EQUAL,user_id);
 		   Filter propertyFilter =
 			        new FilterPredicate("isDeleted", FilterOperator.EQUAL,val );
 		  
-		 	Query q=new Query("Detail").setAncestor(contactEntity.getKey()).addSort("updated", SortDirection.DESCENDING).setFilter(propertyFilter);
+		   CompositeFilter catdel =
+				   CompositeFilterOperator.and(filter1, propertyFilter);
+		   
+		 	Query q=new Query("Detail").setAncestor(contactEntity.getKey()).addSort("updated", SortDirection.DESCENDING).setFilter(catdel);
 		 	JSONArray detailList=new JSONArray();
 		 	
 		 	for(Entity  detailEntity: datastore.prepare(q).asIterable())
@@ -712,7 +751,7 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 			 	      date = new Date(d);
 			 	      contact.put("updated",date);
 		 	contact.put("detail",detailList);
-		 	
+		 	contact.put("user_id", user_id);
 		 	// response.setStatus(200);
 		      JSONObject obj=new JSONObject();
 			    obj.put("status", true);
@@ -725,9 +764,18 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 	}
 			else
 			{
-				 Filter propertyFilter =
-					        new FilterPredicate("isDeleted", FilterOperator.EQUAL,val);
-				Query q=new Query("Contact").addSort("updated",SortDirection.DESCENDING).setFilter(propertyFilter);
+				
+				
+
+				  Filter filter1=new FilterPredicate("user_id",FilterOperator.EQUAL,user_id);
+				   Filter propertyFilter =
+					        new FilterPredicate("isDeleted", FilterOperator.EQUAL,val );
+				  
+				   CompositeFilter catdel =
+						   CompositeFilterOperator.and(filter1, propertyFilter);
+				 /*Filter propertyFilter =
+					        new FilterPredicate("isDeleted", FilterOperator.EQUAL,val);*/
+				Query q=new Query("Contact").addSort("updated",SortDirection.DESCENDING).setFilter(catdel);
 				  contactList=displayQuery(q,val);
 
 					 //response.setStatus(200);
@@ -745,12 +793,18 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 	
 
 	@Override
-	public JSONObject deleteContact(String contact_id) {
+	public JSONObject deleteContact(String contact_id,String user_id) {
 
 		  long d;
 		  Date date;
-		Key key=KeyFactory.createKey("Contact", contact_id);
-		
+		      
+		  
+		  
+		  
+		  Key key=new KeyFactory.Builder("User",user_id)
+  				.addChild("Contact", contact_id)
+  				.getKey();
+  		
   
   	
 			        Entity contactEntity=null;
@@ -824,6 +878,47 @@ public class ContactDaoImplementation implements ContactDao,DetailDao {
 		        
 		
 	}
+
+	@Override
+	public JSONObject deleteDetail(String contact_id,String detail_id,String user_id) {
+		
+		
+		
+		
+	Entity detail = null;
+	Key key=new KeyFactory.Builder("User", user_id)
+	        .addChild("Contact",contact_id)
+	        .addChild("Detail", detail_id)
+	        .getKey();
+	
+	try {
+		detail = datastore.get(key);
+	} catch (EntityNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	
+	detail.setProperty("isDeleted", true);
+	datastore.put(detail);
+	
+	
+    JSONObject jsonobject=new JSONObject();
+    jsonobject.put("contactType",detail.getProperty("contactType"));
+    jsonobject.put("value", detail.getProperty("value"));
+    jsonobject.put("contact_id", detail.getProperty("contact_id"));
+    jsonobject.put("detail_id", detail.getProperty("detail_id "));
+    
+    JSONObject obj=new JSONObject();
+    obj.put("status", true);
+	obj.put("code", 200);
+	obj.put("detail",jsonobject);
+	obj.put("message", "detail deleted");
+	
+	
+	return obj;
+	
+}
 	
 	
 }

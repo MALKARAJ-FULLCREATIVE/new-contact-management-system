@@ -10,10 +10,22 @@ public class Contact {
 	private String firstName;
 	private String lastName;
 	private String address;
+	private String user_id;
 	private String contact_id;
 	private Date createdDate;  //Date
 	private Date updatedDate;
 	private boolean isDeleted;
+	
+	
+	
+	
+	public String getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(String user_id) {
+		this.user_id = user_id;
+	}
+	
 	
 	
 	
@@ -36,14 +48,14 @@ public class Contact {
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-	Contact(String firstName,String lastName,String address)
+	Contact(String firstName,String lastName,String address,String user_id)
 	{
 		this.firstName=firstName;
 		this.lastName=lastName;
 		this.address=address;
 		 String contact_id= UUID. randomUUID().toString();
 		this.contact_id=contact_id;
-	
+	this.user_id=user_id;
 
   	  DateTime now = new DateTime();
   	   Date millis=new Date(now.getMillis());

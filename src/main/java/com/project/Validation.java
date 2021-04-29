@@ -3,10 +3,59 @@ package com.project;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.mindrot.jbcrypt.BCrypt;
+
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
+//import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query.*;
+
+
+
+
+
+
 
 public class Validation {
 
+
 	
+	
+	public static boolean isUserExist(String email,String password)
+	{
+		DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
+	
+		
+		Filter mailConstraint = new FilterPredicate("email", FilterOperator.EQUAL,email);
+		
+		Query q=new Query("User").setFilter(mailConstraint);
+		Entity entity=ds.prepare(q).asSingleEntity();
+         
+		if(entity==null)
+			return false;
+		  
+		
+		
+		
+		//System.out.print(password+"hsdfdsfsdsdfsdfsdfsdfsdfsdfsdfs");
+		
+	//	BCrypt.checkpw(password, entity.getProperty("password").toString());
+
+		
+		System.out.print(password+"hsdfdsfsdsdfsdfsdfsdfsdfsdfsdfs");
+		
+		if(BCrypt.checkpw(password, entity.getProperty("password").toString()) ) {
+		return true;
+		}
+		
+		
+		
+		return false;
+		
+	
+	}
 	public static boolean isValidEmail(String email)
 	{
 		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
@@ -46,7 +95,7 @@ public class Validation {
 	public static boolean isValidAddress(String str)
 	{
 		
-		 String regex = "^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9' ']+$";
+		 /*String regex = "^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9' ']+$";
 		 
 	       
 	        Pattern p = Pattern.compile(regex);
@@ -60,6 +109,8 @@ public class Validation {
 	 
 	        
 	        return m.matches();
+	       */ 
+	        return true;
 		
 		
 	}
