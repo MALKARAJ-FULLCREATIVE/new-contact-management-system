@@ -72,7 +72,7 @@ public class Validation {
 	public static boolean isFirstNameExist(String str)
 	{
 		
-		if(str.trim().equals("") )
+		/*if(str.trim().equals("") )
 			return false;
 		
 		
@@ -83,7 +83,7 @@ public class Validation {
 	         if (!(ch >= 'a' && ch <= 'z')) {
 	            return false;
 	         }
-	      }
+	      }*/
 	      return true;
 		
 		

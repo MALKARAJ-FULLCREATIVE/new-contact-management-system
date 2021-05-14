@@ -80,6 +80,10 @@ public class LoginPage extends HttpServlet {
 		  if(Validation.isUserExist(email, plainText))
 		  {
 			  session.setAttribute("user_id",u.getUserId(email, plainText));
+			   
+			  
+			  
+			   
 			  JSONObject obj=new JSONObject();
 			  JSONObject obj1=new JSONObject();
 			  response.setStatus(200);

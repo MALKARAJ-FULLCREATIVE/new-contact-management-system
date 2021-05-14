@@ -181,19 +181,21 @@ public class ContactManagement extends HttpServlet  {
 	String pathInfo=request.getPathInfo();
 	HttpSession session =request.getSession(false);
 	
+	String cursor=request.getParameter("cursor");
+	//System.out.println(cursor+"hello gelosffjsdfj");
 	
-	if(pathInfo!=null && pathInfo.contains("garbage"))
+	if(pathInfo!=null && pathInfo.contains("garbage"))//deleted
 	{
 		
 		ContactDao contactDao=new ContactDaoImplementation();
-		JSONObject obj=contactDao.displayContact(pathInfo,true,session.getAttribute("user_id").toString());
+		JSONObject obj=contactDao.displayContact(cursor,pathInfo,true,session.getAttribute("user_id").toString());
 		response.setStatus(obj.getInt("code"));
 		response.setCharacterEncoding("UTF-8");
 	    response.getWriter().print(obj);
 	}
 	else {
 	ContactDao contactDao=new ContactDaoImplementation();
-		JSONObject obj=contactDao.displayContact(pathInfo,false,session.getAttribute("user_id").toString());
+		JSONObject obj=contactDao.displayContact(cursor,pathInfo,false,session.getAttribute("user_id").toString());
 		response.setStatus(obj.getInt("code"));
 		response.setCharacterEncoding("UTF-8");
 		

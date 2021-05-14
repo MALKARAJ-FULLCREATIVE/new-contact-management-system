@@ -5,35 +5,49 @@
  */
 
 
-var deleteAllFeeds=()=>{
+/*function validateFirstName()
+{
 
-//var check=document.getElementById("selection");
+
+var firstName=document.getElementById("firstid").value;
+   var letters = /^[A-Za-z]+$/;
+   if(firstName.match(letters) && value!=null)
+     {
+      return true; 
+     }
+   else
+     {
+     alert("firstName is not in proper format");
+     return false;
+     } 
+  
+	
+}*/
+
+/*var deleteAllFeeds=()=>{
+var check=document.getElementById("selection");
 var r=Cache.get("Feeds")
 var n=r["feeds"].length
 var obj={}
 for(let i=0;i<=50 && i<n;i++)
-{            
-    if(r["feeds"][i]!=null)
-    {
-        obj[i]=r["feeds"][i]["feedId"]
-    }
-}
+{
+obj[i]=r["feedId"]
+if((i!=0 && i%50==0 )||i==n-1)
+{
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "/enqueue",true);
 xhr.send(JSON.stringify(obj));
 xhr.onload=function (){
 if(cache.get("Feeds")["feeds"].length>=50)
 {
-cache.get("Feeds")["feeds"]=cache.get("Feeds")["feeds"].splice(50,cache.get("Feeds")["feeds"].length-1)
+cache.get("Feeds")["feeds"]=cache.get("Feeds")["feeds"].splice(50,cache.get("Feeds")["feeds"].length)
 deleteAllFeeds()
 }
-else
-{
-Cache.clear()
+}
 }
 }
 showMessage()
-}
+}*/
 function deleteAll()
 {
 	console.log("deleteallll")
@@ -54,9 +68,9 @@ if(cache.get("Contacts")["contact"].length>=50)
 {
 cache.get("Contacts")["contact"]=cache.get("Contacts")["contact"].splice(50,cache.get("Contacts")["contact"].length)
 document.getElementById("contact").innerHTML="";
+getContact();
 deleteAll();
 }
-getContact();
 }
 
 
@@ -453,8 +467,6 @@ function deleteDetail(cid,did)
 
 
 
-
-
 function deleteContact(id)
 {
 	
@@ -814,10 +826,6 @@ var xhr = new XMLHttpRequest();
 	if(data["success"]==true)
 	{
 	  window.location.href="/loginpage";
-	}
-	else
-	{
-		window.location.href="/loginpage";
 	}
     
      

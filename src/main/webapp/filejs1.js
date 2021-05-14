@@ -5,68 +5,73 @@
  */
 
 
-var deleteAllFeeds=()=>{
+/*function validateFirstName()
+{
 
-//var check=document.getElementById("selection");
+
+var firstName=document.getElementById("firstid").value;
+   var letters = /^[A-Za-z]+$/;
+   if(firstName.match(letters) && value!=null)
+     {
+      return true; 
+     }
+   else
+     {
+     alert("firstName is not in proper format");
+     return false;
+     } 
+  
+	
+}*/
+
+/*var deleteAllFeeds=()=>{
+var check=document.getElementById("selection");
 var r=Cache.get("Feeds")
 var n=r["feeds"].length
 var obj={}
 for(let i=0;i<=50 && i<n;i++)
-{            
-    if(r["feeds"][i]!=null)
-    {
-        obj[i]=r["feeds"][i]["feedId"]
-    }
-}
-var xhr = new XMLHttpRequest();
-xhr.open("POST", "/enqueue",true);
-xhr.send(JSON.stringify(obj));
-xhr.onload=function (){
-if(cache.get("Feeds")["feeds"].length>=50)
 {
-cache.get("Feeds")["feeds"]=cache.get("Feeds")["feeds"].splice(50,cache.get("Feeds")["feeds"].length-1)
-deleteAllFeeds()
-}
-else
-{
-Cache.clear()
-}
-}
-showMessage()
-}
-function deleteAll()
-{
-	console.log("deleteallll")
-	var r=Cache.get("Contacts")
-var n=r["contact"].length
-var obj={}
-for(let i=0;i<=50 && i<n;i++)
-{
-obj[i]=r["contact"][i]["contact_id"]
+obj[i]=r["feedId"]
 if((i!=0 && i%50==0 )||i==n-1)
 {
 var xhr = new XMLHttpRequest();
 xhr.open("POST", "/enqueue",true);
 xhr.send(JSON.stringify(obj));
 xhr.onload=function (){
-	
-if(cache.get("Contacts")["contact"].length>=50)
+if(cache.get("Feeds")["feeds"].length>=50)
 {
-cache.get("Contacts")["contact"]=cache.get("Contacts")["contact"].splice(50,cache.get("Contacts")["contact"].length)
-document.getElementById("contact").innerHTML="";
-deleteAll();
+cache.get("Feeds")["feeds"]=cache.get("Feeds")["feeds"].splice(50,cache.get("Feeds")["feeds"].length)
+deleteAllFeeds()
 }
-getContact();
 }
-
-
-
-
-
+}
+}
+showMessage()
+}*/
+/*function deleteAll()
+{
+	var r=Cache.get("Contact")
+var n=r["feeds"].length
+var obj={}
+for(let i=0;i<=50 && i<n;i++)
+{
+obj[i]=r["feedId"]
+if((i!=0 && i%50==0 )||i==n-1)
+{
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "/enqueue",true);
+xhr.send(JSON.stringify(obj));
+xhr.onload=function (){
+if(cache.get("Feeds")["feeds"].length>=50)
+{
+cache.get("Feeds")["feeds"]=cache.get("Feeds")["feeds"].splice(50,cache.get("Feeds")["feeds"].length)
+deleteAllFeeds()
+}
+}
 }
 }
 	
-}
+}*/
 
 /*function deleteAll()
 {
@@ -295,9 +300,8 @@ function addContact()
 	
 	
 	xhr.onload = function() {
-	cache.clear();
 	 getContact();
-   
+
 	}
 	
 	
@@ -313,12 +317,10 @@ function getContact(cursor="")
 {
 	
 	console.log(cache);
-	if(Cache.has("Contacts") && cursor=="")
+	if(Cache.has(cursor))
 	{
-		console.log("in if")
-		document.getElementById("contact").innerHTML="";
 			console.log("frome cache");
-		data=Cache.get("Contacts");
+		data=Cache.get(cursor);
 		
 			var obj= data["contact"][0]["detail"] ;
  
@@ -326,7 +328,7 @@ function getContact(cursor="")
        
    //toggleContact("delete");
 
-	  addfirtslastname(data,cache.get("cursor"));
+	  addfirtslastname(data);
 
 	  addDetail( data["contact"][0]["contact_id"],obj,data["contact"][0]["address"]  );
 	
@@ -350,22 +352,22 @@ console.log("from server")
 	  var data = JSON.parse(this.responseText);
 	 //console.log(data.contact["length"]);
 	if(Cache.has("Contacts"))
-	{
-		console.log("in")
-		var r=Cache.get("Contacts")
-		for(let i=0;i<data.contact.length;i++)
-		{
-		r["contact"].push(data.contact[i])
-		}
-		Cache.set("cursor",data.cursor);
-		Cache.set("Contacts",r);
-	}
-	else
-	{
-		console.log("in else")
-		Cache.set("Contacts",data);
-		Cache.set("cursor",data.cursor);
-	}
+{
+console.log("in")
+var r=Cache.get("Feeds")
+for(let i=0;i<data.feeds.length;i++)
+{
+r["feeds"].push(data.feeds[i])
+}
+Cache.set("cursor",data.cursor);
+Cache.set("Feeds",r);
+}
+else
+{
+console.log("in else")
+Cache.set("Feeds",data);
+Cache.set("cursor",data.cursor);
+}
 	
 	
 	
@@ -393,7 +395,7 @@ console.log("from server")
        
    //toggleContact("delete");
 
-	  addfirtslastname(data,data.cursor);
+	  addfirtslastname(data);
 
 	  addDetail( data["contact"][0]["contact_id"],obj,data["contact"][0]["address"]  );
 
@@ -446,8 +448,6 @@ function deleteDetail(cid,did)
 		getContact();
 	}
 }
-
-
 
 
 
@@ -815,10 +815,6 @@ var xhr = new XMLHttpRequest();
 	{
 	  window.location.href="/loginpage";
 	}
-	else
-	{
-		window.location.href="/loginpage";
-	}
     
      
      
@@ -964,7 +960,7 @@ function addDeletedDetail(cid,data,address)
 }
 
 
-function addfirtslastname(data,cursor) {
+function addfirtslastname(data) {
 		
 		
 		console.log(data);
@@ -1010,7 +1006,7 @@ function addfirtslastname(data,cursor) {
 
 }
 
-txt+=`<input type="button" value="loadnext20"  onclick="getContact('${cursor}')" /> `
+txt+=`<input type="button" value="loadnext20"  onclick="getContact('${data.cursor}')" /> `
 
 
 	contactContainer.innerHTML+=txt;
@@ -1049,3 +1045,5 @@ document.getElementById("contact").innerHTML="";
 bin.onclick=function(){toggleContact("delete");getContact()};
 bin.src="images/contact.png"
 }
+
+

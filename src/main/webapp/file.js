@@ -4,25 +4,144 @@
  * 
  */
 
+var showMessage=()=>{
 
-/*function validateFirstName()
+
+document.getElementById("contact").innerHTML="";
+getContact(cache.get("cursor"))
+
+/*
+var inter=setInterval (()=>{
+	document.getElementById("contact").innerHTML="";
+getContact()}, 2000);
+window.setTimeout(function () {
+console.log("done");
+
+      clearInterval(inter);
+
+  }, 8000);
+
+addContact*/
+
+}
+
+
+
+
+
+var deleteAll=()=>{
+
+//var check=document.getElementById("selection");
+var r=Cache.get("Contacts")
+var n=r["contact"].length
+var obj={}
+for(let i=0;i<=50 && i<n;i++)
+{            
+    if(r["contact"][i]!=null)
+    {
+        obj[i]=r["contact"][i]["contact_id"]
+    }
+}
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "/enqueue",true);
+xhr.send(JSON.stringify(obj));
+xhr.onload=function (){
+if(cache.get("Contacts")["contact"].length>=50)
+{
+cache.get("Contacts")["contact"]=cache.get("Contacts")["contact"].splice(50,cache.get("Contacts")["contact"].length-1)
+deleteAll()
+}
+else
+{
+Cache.del("Contacts");
+}
+
+}
+
+//showMessage();
+}
+/*
+function deleteAll()
+{
+	console.log("deleteallll")
+	var r=Cache.get("Contacts")
+var n=r["contact"].length
+var obj={}
+for(let i=0;i<=50 && i<n;i++)
+{
+obj[i]=r["contact"][i]["contact_id"]
+if((i!=0 && i%50==0 )||i==n-1)
+{
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "/enqueue",true);
+xhr.send(JSON.stringify(obj));
+xhr.onload=function (){
+	
+if(cache.get("Contacts")["contact"].length>=50)
+{
+cache.get("Contacts")["contact"]=cache.get("Contacts")["contact"].splice(50,cache.get("Contacts")["contact"].length)
+document.getElementById("contact").innerHTML="";
+deleteAll();
+}
+getContact();
+}
+
+
+
+
+
+}
+}
+	
+}
+*/
+/*function deleteAll()
+{
+	
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "/enqueue",true);
+
+
+var jsonObject = {};  
+
+cache.forEach((value, key) => {  
+    jsonObject[key] = value  
+});  
+
+xhr.send(JSON.stringify(jsonObject));
+xhr.onload=function (){
+console.log("in deleted")
+}
+
+
+}
+*/
+
+function addfn()
 {
 
 
-var firstName=document.getElementById("firstid").value;
-   var letters = /^[A-Za-z]+$/;
-   if(firstName.match(letters) && value!=null)
-     {
-      return true; 
-     }
-   else
-     {
-     alert("firstName is not in proper format");
-     return false;
-     } 
-  
+	for(let i=0;i<1000;i++)
+	{
 	
-}*/
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/contact", true);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	
+   var obj={"contact":{"firstName":"firstName"+i,"lastName":"lastName","address":"address",
+      "detail": [ {"contactType":"phone" ,"value":"7338937115"}]  }     };
+       
+
+	xhr.send(JSON.stringify(obj));
+	
+	
+
+		}
+getContact();
+
+}
+
+
 
 function togglePopup(){
 console.log(togglePopup);
@@ -46,10 +165,52 @@ function removeDiv()
 }	          	
 
 
+function newaddMoreField(){
+	
+	//console.log(addMoreField);
+	var txt=""
+	
+
+  var main=document.getElementById("container2");
+
+	
+	var div=document.createElement("div");
+	         
+	var sel = document.createElement("select");
+	var opt1 = document.createElement("option");
+	var opt2 = document.createElement("option");
+	 			
+
+    sel.setAttribute('class','ex');
+
+	opt1.value = "phone";
+	opt1.text = "phone";
+
+	opt2.value = "email";
+	opt2.text = "email";
+
+	sel.add(opt1, null);
+	sel.add(opt2, null);
+	
+	
+	var inp=document.createElement("input");
+	    inp.setAttribute('class','ex');
+	 
+    div.setAttribute('class','demo');
+	div.appendChild(sel);
+	div.appendChild(inp);
+	main.appendChild(div);
+	
+	
+
+}
+
+
+
 
 function addMoreField(){
 	
-	console.log(addMoreField);
+	//console.log(addMoreField);
 	var txt=""
 	
 
@@ -92,7 +253,7 @@ function addMoreField(){
 
 function editContact(cid,data)
 {
-console.log(editContact);
+//console.log(editContact);
 	var txt="";
 	var contactid=cid;
 	
@@ -121,7 +282,7 @@ var list=	div.getElementsByTagName('li');
 function addContact()
 {
 
-console.log(addContact);	
+//console.log(addContact);	
 	
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", "/contact", true);
@@ -161,8 +322,10 @@ console.log(addContact);
 	
 	
 	xhr.onload = function() {
+	cache.clear();
+	document.getElementById("contact").innerHTML="";
 	 getContact();
-
+   
 	}
 	
 	
@@ -174,34 +337,103 @@ console.log(addContact);
 
 
 
-function getContact()
+function getContact(cursor="")
 {
 	
-	console.log(getContact);
+	console.log(cache);
+	if(Cache.has("Contacts") && cursor=="")
+	{
+		console.log("in if")
+		document.getElementById("contact").innerHTML="";
+			console.log("frome cache");
+		data=Cache.get("Contacts");
+		
+			var obj= data["contact"][0]["detail"] ;
+ 
+ 
+       
+   //toggleContact("delete");
+
+	  addfirtslastname(data,cache.get("cursor"));
+
+	  addDetail( data["contact"][0]["contact_id"],obj,data["contact"][0]["address"]  );
+	
+
+		
+	}
+	else
+	{  
+		
+		
+		
+	    
+	
+console.log("from server")
+	//console.log(getContact);
 	var xhr = new XMLHttpRequest();
-	xhr.open("GET", "/contact", true);
+	xhr.open("GET", "/contact?cursor="+cursor, true);
 	xhr.setRequestHeader('Content-Type', 'application/json');
 	xhr.send();
 	xhr.onload = function() {
 	  var data = JSON.parse(this.responseText);
 	 //console.log(data.contact["length"]);
+	if(Cache.has("Contacts"))
+	{
+		console.log("in")
+		var r=Cache.get("Contacts")
+		for(let i=0;i<data.contact.length;i++)
+		{
+		r["contact"].push(data.contact[i])
+		}
+		Cache.set("cursor",data.cursor);
+		Cache.set("Contacts",r);
+	}
+	else
+	{
+		console.log("in else")
+		Cache.set("Contacts",data);
+		Cache.set("cursor",data.cursor);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	 if(data.contact["length"]!=0){
      	var obj= data["contact"][0]["detail"] ;
 
  
        
-toggleContact("delete");
+   //toggleContact("delete");
 
-	  addfirtslastname(data);
+	  addfirtslastname(data,data.cursor);
 
 	  addDetail( data["contact"][0]["contact_id"],obj,data["contact"][0]["address"]  );
 
 }
-	}
+	
 	
 }
 
+
+
+}
+}
 
 function getDeletedContact()
 {
@@ -231,7 +463,7 @@ function getDeletedContact()
 function deleteDetail(cid,did)
 {
 	
-	console.log(deleteDetail);
+	//console.log(deleteDetail);
 	var str=`/contact/detail/delete/${cid}/${did}`;
 	var xhr=new XMLHttpRequest();
 	xhr.open("DELETE", str, true);
@@ -242,6 +474,8 @@ function deleteDetail(cid,did)
 		getContact();
 	}
 }
+
+
 
 
 
@@ -260,6 +494,8 @@ function deleteContact(id)
 	xhr.send();
 	xhr.onload=function()
 	{
+		
+		Cache.clear();
 		getContact();
 	}
 }
@@ -291,14 +527,14 @@ function deleteContact(id)
 
 function addMoreDetail(cid)
 {
-	console.log(addMoreDetail);
+//	console.log(addMoreDetail);
 	
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", "/contact/detail", true);
 	xhr.setRequestHeader('Content-Type', 'application/json');
 	
 	 
-       var x = document.getElementById("container1").querySelectorAll(".ex");
+       var x = document.getElementById("container2").querySelectorAll(".ex");
    
   var arr=new Array();
       for( let i=0;i<x.length;i+=2)
@@ -339,7 +575,7 @@ function addMoreDetail(cid)
 function addDetail(cid,data,address)
 {
 	
-	console.log(addDetail);
+	//console.log(addDetail);
 	var x=document.getElementsByClassName("fx");
 	
 	let check=0;
@@ -385,7 +621,7 @@ function addDetail(cid,data,address)
     <form  >
 
 
-<div id="container">
+<div id="container2">
 contactType:   <select id="selectid" name="contactType" class="ex">
 	<option value="phone">    phone 
  	<option value="email">    email     </option>
@@ -394,7 +630,7 @@ contactType:   <select id="selectid" name="contactType" class="ex">
 <input id="inputid" type="text" name="value"  class="ex"/> 
 </div>
 
-<input type="button" value="add" onclick="addMoreField()"/>
+<input type="button" value="add" onclick="newaddMoreField()"/>
 <input type="button" value="remove" onclick="removeDiv()"/>  <br/>
 
  <input type="button" value="submit" onclick="addMoreDetail('${cid}');" />
@@ -588,6 +824,13 @@ function changeColor(id)
 function logoutfn()
 {
 
+ var url='/contact';
+    caches.open('getcontact').then(cache => {
+	cache.delete(url);
+ 	})
+
+		
+
 var xhr = new XMLHttpRequest();
 	xhr.open("GET", "/logout", true);
 	xhr.setRequestHeader('Content-Type', 'application/json');
@@ -599,6 +842,10 @@ var xhr = new XMLHttpRequest();
 	if(data["success"]==true)
 	{
 	  window.location.href="/loginpage";
+	}
+	else
+	{
+		window.location.href="/loginpage";
 	}
     
      
@@ -745,10 +992,10 @@ function addDeletedDetail(cid,data,address)
 }
 
 
-function addfirtslastname(data) {
+function addfirtslastname(data,cursor) {
 		
 		
-		console.log("addfirstslastname");
+		console.log(data);
 		var txt="";
         var contactContainer = document.getElementById("contact");
         
@@ -791,13 +1038,15 @@ function addfirtslastname(data) {
 
 }
 
+txt+=`<input type="button" value="loadnext20"  onclick="getContact('${cursor}')" /> `
 
-	contactContainer.innerHTML=txt;
+
+	contactContainer.innerHTML+=txt;
 	
 	
 }
 
-
+/*
 var toggleContact=(id)=>{
 var cont=document.getElementById(id);
 cont.onclick=function(){getDeletedContact()};
@@ -806,7 +1055,25 @@ cont.src="images/delete.png";
 var toggleBin=(id)=>{
 	
 var bin=document.getElementById(id);
-bin.onclick=function(){getContact()};
+bin.onclick=function(){
+	getContact()
+	};
 bin.src="images/contact.png"
 console.log(bin);
+}
+
+*/
+
+var toggleContact=(id)=>{
+var cont=document.getElementById(id);
+console.log(cont);
+document.getElementById("contact").innerHTML="";
+cont.onclick=function(){getDeletedContact()};
+cont.src="images/delete.png";
+}
+var toggleBin=(id)=>{
+var bin=document.getElementById(id);
+document.getElementById("contact").innerHTML="";
+bin.onclick=function(){toggleContact("delete");getContact()};
+bin.src="images/contact.png"
 }

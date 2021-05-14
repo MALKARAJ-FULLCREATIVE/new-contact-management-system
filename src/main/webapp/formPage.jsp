@@ -21,6 +21,13 @@ border-style: dotted;
 } 
 
 
+
+#contact{
+overflow:scroll;
+height:500px;
+}
+
+
 .contact
 {
      margin: auto;
@@ -139,6 +146,12 @@ list-style-type:none;
 <body onload="getContact()">
 
 
+<%
+response.setHeader("Cache-Control","no-cache,no-store,must-revalidate");
+if(session.getAttribute("user_id")==null)
+	response.sendRedirect("/loginpage");
+%>
+
 
 <div   id="container" class="flex-container">
   <div id="contact" class="flex-item-left"> </div>
@@ -174,6 +187,7 @@ contactType:   <select id="selectid" name="contactType" class="ex">
 
  <input type="button" value="submit" onclick="addContact();" />
  
+ 
 
  
  
@@ -201,7 +215,16 @@ contactType:   <select id="selectid" name="contactType" class="ex">
 <div id="new"></div>
 	            
 
-<script type="text/javascript" src="newfile1.js"></script>
+<script type="text/javascript" src="file.js"></script>
+
+
+<script type="text/javascript" src="cachejs.js">
+</script>
+
+<input type="button" value="addcontact" onclick="addfn()"/>
+ <input type="button" value="deleteall" onclick="showMessage(),deleteAll()"/>
+
+
 
 </body>
 </html>

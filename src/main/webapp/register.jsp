@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<script>
+	<script>
 
 function register()
 {
@@ -32,6 +32,25 @@ function register()
 
 		xhr.send(JSON.stringify(obj));
 		
+		xhr.onload = function() {
+
+			var data=  JSON.parse(this.responseText);
+			
+			if(data["success"]==true)
+				{
+				
+				alert("user created successfully!!");
+				}
+			else
+				{
+				alert("user already exist!!");
+				
+				}
+			
+			
+			
+			}
+		
 	
 	
 
@@ -43,12 +62,16 @@ function register()
 </script>
 
 
-  <label for="email">Email:</label>
-  <input type="email" id="email" name="email"><br><br>
-  <label for="pwd">Password:</label>
-  <input type="password" id="pwd" name="pwd" ><br><br>
-  <input type="button"   value="register"  onclick="register()"   />
-  <a href="/loginpage">login</a> 
+	<label for="email">Email:</label>
+	<input type="email" id="email" name="email">
+	<br>
+	<br>
+	<label for="pwd">Password:</label>
+	<input type="password" id="pwd" name="pwd">
+	<br>
+	<br>
+	<input type="button" value="register" onclick="register()" />
+	<a href="/loginpage">login</a>
 
 
 </body>
