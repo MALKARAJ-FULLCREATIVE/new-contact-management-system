@@ -157,7 +157,7 @@ public class Testing {
 			
 		  }
 		  
-		  @Test
+		 /* @Test
 		  public void firstNameFailTest()
 		  {
 			  JSONObject obj=new JSONObject();
@@ -170,7 +170,7 @@ public class Testing {
 			  boolean val=Validation.isFirstNameExist(obj.getString("firstName")  );
 			  assertEquals(val,false);
 			
-		  }
+		  }*/
 		  
 		  
 
@@ -224,7 +224,7 @@ public class Testing {
 			  
 		  }
 		  
-		  @Test
+		  /*@Test
 		  public void addressFailTest()
 		  {
 			  JSONObject obj=new JSONObject();
@@ -237,7 +237,7 @@ public class Testing {
 			  boolean val=Validation.isValidAddress(obj.getString("address"));
 			  assertEquals(val,false);
 			  
-		  }
+		  }*/
 		  
 		  
 		  
