@@ -35,6 +35,11 @@ height:500px;
       border-color: black;
 }
 
+.active{
+background-color:#e4ffff;
+
+}
+
 
 
 .flex-container {
@@ -153,6 +158,28 @@ if(session.getAttribute("user_id")==null)
 %>
 
 
+<div class="imageHover" id="profileButton">
+<input type="button"  value="profile" onclick="getProfile();setActive('profileButton');toggleProfile();" />
+</div>
+<div class="imageHover active" id="feedButton">
+<input type="button"  value="contacts" onclick="getContact();setActive('feedButton');toggleToFeed();"/>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="myProfile"></div>
+
+
 <div   id="container" class="flex-container">
   <div id="contact" class="flex-item-left"> </div>
   <div id="detail" class="flex-item-right"> </div>
@@ -182,10 +209,14 @@ contactType:   <select id="selectid" name="contactType" class="ex">
 <input id="inputid" type="text" name="value"  class="ex"/> 
 </div>
 
+
+
+
 <input type="button" value="add" onclick="addMoreField()"/>
 <input type="button" value="remove" onclick="removeDiv()"/>  <br/>
 
  <input type="button" value="submit" onclick="addContact();" />
+ 
  
  
 
@@ -206,13 +237,21 @@ contactType:   <select id="selectid" name="contactType" class="ex">
 
 
  <br/>
+ 
+ <div id="buttons">
 <img src= "images/plusnew.jpg" onclick="togglePopup()" width="40" height="40"> 
 
 <img id="delete" src= "images/delete.png" onclick="getDeletedContact()" width="40" height="40"> 
  <input type="button" value="logout" onclick="logoutfn()"/>
+ 
+ 
+<input type="button" value="addcontact" onclick="addfn()"/>
+ <input type="button" value="deleteall" onclick="showMessage(),deleteAll()"/>
+ 
+
+</div>
 
 
-<div id="new"></div>
 	            
 
 <script type="text/javascript" src="file.js"></script>
@@ -221,9 +260,8 @@ contactType:   <select id="selectid" name="contactType" class="ex">
 <script type="text/javascript" src="cachejs.js">
 </script>
 
-<input type="button" value="addcontact" onclick="addfn()"/>
- <input type="button" value="deleteall" onclick="showMessage(),deleteAll()"/>
-
+<script type="text/javascript" src="profilejs.js">
+</script>
 
 
 </body>

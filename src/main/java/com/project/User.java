@@ -13,6 +13,8 @@ public class User {
 	private  String email;
 	private Date createdDate; 
 	private Date updatedDate;
+	private String image;
+	private boolean active;
 	private boolean isDeleted;
 	
 	
@@ -20,10 +22,24 @@ public class User {
 	
 	
 	
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
+	public boolean isActive() {
+		return active;
+	}
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 	public User(String email,String password) {
 		super();
 		this.password = password;
 		this.email = email;
+		this.active=true;
+		this.image="null.png";
         this.isDeleted=false;
 		this.user_id=UUID. randomUUID().toString();
 	  	  DateTime now = new DateTime();

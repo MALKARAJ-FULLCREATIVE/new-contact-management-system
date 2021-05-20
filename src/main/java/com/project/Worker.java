@@ -1,6 +1,9 @@
 package com.project;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -28,7 +32,8 @@ public Worker() {
 
 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-	DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
+	String user_id = request.getParameter("user_id");
+	/*DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
 	String contact = request.getParameter("key");
 	JSONObject obj=new JSONObject(contact);
 	
@@ -44,7 +49,37 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 //	Key key1=	new KeyFactory.Builder("User",user_id).addChild("contact", obj.get(String.valueOf(i)).toString())
 	//	     .addChild("detail", obj.get(String.valueOf(i))         ))
 	ds.delete(key);
+	}*/
+	
+	
+	
+	DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
+	String contact = request.getParameter("key");
+	JSONObject obj=new JSONObject(contact);
+	JSONArray arr = obj.getJSONArray("contact");
+	List<Key> list=new ArrayList<Key>();
+	List<Key> list1=new ArrayList<Key>();
+	for (int i = 0; i < arr.length(); i++) {
+	String contact_id = arr.getJSONObject(i).getString("contact_id");
+	JSONArray detail=arr.getJSONObject(i).getJSONArray("detail");
+	// System.out.println(comment);
+	Key k = new KeyFactory.Builder("User", user_id).addChild("Contact",contact_id).getKey();
+	for(int j=0;j<detail.length();j++)
+	{
+	String detail_id=detail.getJSONObject(j).getString("detail_id");
+	
+	Key key=new KeyFactory.Builder("User", user_id)
+		.addChild("Contact",contact_id)
+	.addChild("Detail", detail_id)
+	.getKey();
+	list1.add(key);
 	}
+
+	        list.add(k);
+	        
+	    }
+	    ds.delete(list);
+	    ds.delete(list1);
 	
 	
 	

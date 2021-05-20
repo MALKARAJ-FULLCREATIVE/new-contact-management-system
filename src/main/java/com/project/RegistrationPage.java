@@ -66,7 +66,7 @@ public class RegistrationPage extends HttpServlet {
 		String pwd = BCrypt.hashpw(jsonobject.get("password").toString(), BCrypt.gensalt());
 
 		User user = new User(email, pwd);
-
+      
 		UserDao userdao = new UserDaoImplementation();
 		boolean check = userdao.createUser(user);
 

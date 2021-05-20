@@ -32,7 +32,9 @@ addContact*/
 var deleteAll=()=>{
 
 //var check=document.getElementById("selection");
-var r=Cache.get("Contacts")
+
+
+/*var r=Cache.get("Contacts")
 var n=r["contact"].length
 var obj={}
 for(let i=0;i<=50 && i<n;i++)
@@ -57,8 +59,72 @@ Cache.del("Contacts");
 }
 
 }
-
+*/
 //showMessage();
+
+
+
+//var check=document.getElementById("selection");
+var r=Cache.get("Contacts")
+var n=r["contact"].length
+var contacts={}
+var single={}
+var data=[]
+var details={}
+var cData=[]
+
+for(let i=0;i<=50 && i<n;i++)
+{
+single={}
+cData=[]
+if(r!=null)
+{
+single["contact_id"]=r["contact"][i]["contact_id"]
+var m=r["contact"][i]["detail"].length
+for(let j=0;j<m;j++)
+{
+details={}
+details["detail_id"]=r["contact"][i]["detail"][j]["detail_id"]
+cData.push(details)
+
+        }
+        single["detail"]=cData
+        
+        data.push(single)            
+    }
+
+}
+contacts["contact"]=data
+//console.log(feeds)
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "/enqueue",true);
+xhr.send(JSON.stringify(contacts));    
+xhr.onload=function (){
+        if(cache.get("Contacts")["contact"].length>=50)
+        {
+            cache.get("Contacts")["contact"]=cache.get("Contacts")["contact"].splice(50,cache.get("Contacts")["contact"].length-1)
+            deleteAll()    
+        }
+        else
+        {
+            Cache.del("Contacts")
+
+        }                
+   
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
 }
 /*
 function deleteAll()
@@ -137,6 +203,16 @@ function addfn()
 	
 
 		}
+		
+	/*xhr.onload = function() {
+	//cache.clear();
+	console.log("heisfdsf");
+	document.getElementById("contact").innerHTML="";
+	 getContact();
+   
+	}*/
+		document.getElementById("contact").innerHTML="";
+		Cache.del("Contacts");
 getContact();
 
 }
@@ -256,24 +332,40 @@ function editContact(cid,data)
 //console.log(editContact);
 	var txt="";
 	var contactid=cid;
+	var atag=document.getElementById("AFL"+cid);
+	//atag.onclick=null;
 	
 	var div=document.getElementById(contactid);
 var list=	div.getElementsByTagName('li');
 	
 	list[0].contentEditable=true;	
 	
-/*	var address=document.getElementById("da"+cid);
-	 address.style["display"]="block";
-	console.log(address.style["display"]);
-   for(let i=0;i<data.length;i++)
-{
-	
-	var div=document.getElementById("de"+data[i]["detail_id"]);
-	div.style["display"]="block";
-	
-}
-  */ 
+	var detailContainer=document.getElementById("detail");
+var element=document.getElementById("saveB");
+console.log(element);
 
+ if(  document.getElementById(cid).getElementsByTagName('li')[0].isContentEditable==true && element == null)
+     {         
+txt1=`</br></br</br></br></br</br><input id="saveB" type="button" value="save"  onclick="updateContact('${cid}', ${JSON.stringify(data).split('"').join("&quot;")}        )" />`;
+	detailContainer.innerHTML+=txt1;	
+	
+	}
+		
+	
+	    
+	          document.getElementById("A"+cid).contentEditable=true;
+				
+				
+			
+				for(let i=0;i<data.length;i++)
+				{
+					document.getElementById(data[i]["detail_id"]  ).contentEditable=true;
+				   
+				}
+				
+				
+								
+		
 	
 	
 }
@@ -294,8 +386,8 @@ function addContact()
 	
 	var lastName=document.getElementById("lastid").value;
 	var address=document.getElementById("addressid").value;
-	var contactType=document.getElementById("selectid").selectedOptions[0].value;
-	   var value   =document.getElementById("inputid").value;
+//	var contactType=document.getElementById("selectid").selectedOptions[0].value;
+	//   var value   =document.getElementById("inputid").value;
  
        var x = document.getElementById("container1").querySelectorAll(".ex");
    
@@ -414,7 +506,7 @@ console.log("from server")
 	
 	
 	
-	 if(data.contact["length"]!=0){
+	 //if(data.contact["length"]!=0){
      	var obj= data["contact"][0]["detail"] ;
 
  
@@ -425,7 +517,7 @@ console.log("from server")
 
 	  addDetail( data["contact"][0]["contact_id"],obj,data["contact"][0]["address"]  );
 
-}
+//}
 	
 	
 }
@@ -448,12 +540,12 @@ function getDeletedContact()
      	var obj= data["contact"][0]["detail"] ;
 
  
+		toggleBin("delete");
+    
 
-    toggleBin("delete");
-       
 	  appendDeletedData(data);
 
-	  addDetail( data["contact"][0]["contact_id"],obj,data["contact"][0]["address"]  );
+	  addDeletedDetail( data["contact"][0]["contact_id"],obj,data["contact"][0]["address"]  );
 
 	}
 	
@@ -496,6 +588,8 @@ function deleteContact(id)
 	{
 		
 		Cache.clear();
+		document.getElementById("contact").innerHTML="";
+		document.getElementById("detail").innerHTML="";
 		getContact();
 	}
 }
@@ -671,12 +765,11 @@ contactType:   <select id="selectid" name="contactType" class="ex">
 	}
 	txt1+=`<input type="button" value="addmore" onclick="togglePopupMoreDetail()"  /> `;
 	
-	 if(document.getElementById(cid).getElementsByTagName('li')[0].isContentEditable==true)
-     {         
-	txt1+=`</br></br</br></br></br</br><input type="button" value="save"  onclick="updateContact('${cid}', ${JSON.stringify(data).split('"').join("&quot;")}        )" />`;
-	}
+	
 		
-	detailContainer.innerHTML=txt1;	
+detailContainer.innerHTML=txt1;
+	
+	
 	
 	     if(document.getElementById(cid).getElementsByTagName('li')[0].isContentEditable==true)
       {
@@ -695,8 +788,19 @@ contactType:   <select id="selectid" name="contactType" class="ex">
 								
 		}
 		
-
+		
+		var element=document.getElementById("saveB");
+		
+		
+ if(  document.getElementById(cid).getElementsByTagName('li')[0].isContentEditable==true && element == null)
+     {         
+txt1=`</br></br</br></br></br</br><input id="saveB" type="button" value="save"  onclick="updateContact('${cid}', ${JSON.stringify(data).split('"').join("&quot;")}        )" />`;
+	detailContainer.innerHTML+=txt1;	
 	
+	}
+		
+	
+		
 
 
 }
@@ -824,10 +928,7 @@ function changeColor(id)
 function logoutfn()
 {
 
- var url='/contact';
-    caches.open('getcontact').then(cache => {
-	cache.delete(url);
- 	})
+ 
 
 		
 
@@ -961,29 +1062,9 @@ function addDeletedDetail(cid,data,address)
 
 	}
 	
-	 if(document.getElementById(cid).getElementsByTagName('li')[0].isContentEditable==true)
-     {         
-	txt1+=`</br></br</br></br></br</br><input type="button" value="save"  onclick="updateContact('${cid}', ${JSON.stringify(data).split('"').join("&quot;")}        )" />`;
-	}
-		
 	detailContainer.innerHTML=txt1;	
 	
-	     if(document.getElementById(cid).getElementsByTagName('li')[0].isContentEditable==true)
-      {
-
-	          document.getElementById("A"+cid).contentEditable=true;
-				
-				
-			
-				for(let i=0;i<data.length;i++)
-				{
-					document.getElementById(data[i]["detail_id"]  ).contentEditable=true;
-				   
-				}
-				
-				
-								
-		}
+	    
 		
 
 	
@@ -1008,35 +1089,31 @@ function addfirtslastname(data,cursor) {
 			var obj= data["contact"][i]["detail"] ;
 			// console.log("hi"+obj+'hi');
 	
-			txt+=`<a onclick="addDetail('${data["contact"][i]["contact_id"]}', ${JSON.stringify(obj).split('"').join("&quot;")},'${data["contact"][i]["address"]}'   )" > 
+			txt+=`
 			
 			 <div id="${data["contact"][i]["contact_id"]}" style="color:black;"  class="fx"   >
+		 <a  id="AFL${data["contact"][i]["contact_id"]}" onclick="addDetail('${data["contact"][i]["contact_id"]}', ${JSON.stringify(obj).split('"').join("&quot;")},'${data["contact"][i]["address"]}'   )" > 
 			<li contenteditable=false > ${data["contact"][i]["firstName"]} ${data["contact"][i]["lastName"]} </li>
+			
+			 </a> 
+			</div>
+			
+			
+			
+		
+			 
 			<img src= "images/delete.png" onclick="deleteContact('${data["contact"][i]["contact_id"]}')" width="40" height="40"> 
 			<img src= "images/edit.png" onclick="editContact('${data["contact"][i]["contact_id"]}' ,${JSON.stringify(obj).split('"').join("&quot;")} )" style="padding:8px;"  width="40" height="25"   />
-			</li> 
-			</div>
+			
+		`;
 		
-			
-			 </a>`;
-		   
-			
-			
-			
-			//txt1+=`<div id= "${data["contact"][i]["contact_id"]}" style="display:none;"    class="contact">`; 
-			
-			//txt1+=`<h4 > address</br> ${data["contact"][i]["address"]} </h4>`; 
-			
-		//for(let j=0;j<data.contact[i].detail.length;j++){
-				
-			//txt1+=`<h4 id="${data["contact"][i]["detail"][j]["detail_id"]}">  ${data["contact"][i]["detail"][j]["contactType"]}  <br/> ${data["contact"][i]["detail"][j]["value"] } <br/>  </h4> `;
-	 
-
-		// }	
+		
+		
 			txt+=`</div>`;
-          //   txt1+=`</div>`;		
+  	
 
 }
+
 
 txt+=`<input type="button" value="loadnext20"  onclick="getContact('${cursor}')" /> `
 
@@ -1068,12 +1145,17 @@ var toggleContact=(id)=>{
 var cont=document.getElementById(id);
 console.log(cont);
 document.getElementById("contact").innerHTML="";
-cont.onclick=function(){getDeletedContact()};
+document.getElementById("detail").innerHTML="";
+cont.onclick=function(){
+	
+	toggleBin("delete");
+	getDeletedContact()};
 cont.src="images/delete.png";
 }
 var toggleBin=(id)=>{
 var bin=document.getElementById(id);
 document.getElementById("contact").innerHTML="";
+document.getElementById("detail").innerHTML="";
 bin.onclick=function(){toggleContact("delete");getContact()};
 bin.src="images/contact.png"
 }
