@@ -21,7 +21,15 @@ import com.google.appengine.api.datastore.Query.*;
 public class Validation {
 
 
-	
+	public static boolean isTagExist(String tag)
+	{
+		if(tag.equals("important")||tag.equals("spam")||tag.equals("personal")||tag.equals("official"))
+			return true;
+		else
+			return false;
+		
+		
+	}
 	
 	public static boolean isUserExist(String email,String password)
 	{

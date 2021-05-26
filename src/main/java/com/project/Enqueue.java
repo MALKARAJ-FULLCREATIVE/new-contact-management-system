@@ -64,7 +64,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 	 String user_id= session.getAttribute("user_id").toString();
 	 //System.out.println("session enquee"+user_id);
 	  
-	 Queue queue = QueueFactory.getDefaultQueue();
+	 Queue queue = QueueFactory.getQueue("delete");
 		 
 	    
 		

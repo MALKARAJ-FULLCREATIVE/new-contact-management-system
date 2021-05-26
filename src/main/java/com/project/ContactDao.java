@@ -11,6 +11,7 @@ public interface ContactDao  {
 	
 	
 	
+	public abstract JSONObject getContactByCategory(String tag,String user_id);
 	public abstract String addContact(Contact c,String user_id);
 	public abstract JSONObject addContactWithDetails(JSONObject jsonobject,String user_id);
     public abstract JSONObject updateContactWithDetails(JSONObject jsonObject,String contact_id,String user_id);

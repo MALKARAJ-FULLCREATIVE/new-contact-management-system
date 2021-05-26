@@ -183,7 +183,27 @@ public class ContactManagement extends HttpServlet  {
 	
 	String cursor=request.getParameter("cursor");
 	//System.out.println(cursor+"hello gelosffjsdfj");
+
+	String tagInfo="";
 	
+	if(pathInfo!=null) {
+	String path[]=pathInfo.split("/");
+	if(path.length==3) {
+ tagInfo=path[2];
+	}
+	}
+	
+	if(pathInfo!=null && pathInfo.contains("tag"))
+	{
+		System.out.println(tagInfo);
+		ContactDao contactDao=new ContactDaoImplementation();
+		JSONObject obj= contactDao.getContactByCategory(tagInfo,session.getAttribute("user_id").toString());
+		
+    	response.setStatus(obj.getInt("code"));
+		response.setCharacterEncoding("UTF-8");
+	    response.getWriter().print(obj);
+	}
+	else
 	if(pathInfo!=null && pathInfo.contains("garbage"))//deleted
 	{
 		
@@ -194,6 +214,7 @@ public class ContactManagement extends HttpServlet  {
 	    response.getWriter().print(obj);
 	}
 	else {
+		System.out.println("hello");
 	ContactDao contactDao=new ContactDaoImplementation();
 		JSONObject obj=contactDao.displayContact(cursor,pathInfo,false,session.getAttribute("user_id").toString());
 		response.setStatus(obj.getInt("code"));

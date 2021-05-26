@@ -11,7 +11,19 @@ var getProfile=()=>{
 		}
 }
 
+
+
 var appendProfile=(data)=>{
+	
+document.getElementById("proPic").src="/serve?blob-key="+data.user.image
+document.getElementById("emailHolder").innerHTML=data.user.email
+
+}
+
+
+
+
+/*var appendProfile=(data)=>{
 	console.log("appendprofile")
 	var element=document.getElementById("myProfile")
 
@@ -35,7 +47,7 @@ var appendProfile=(data)=>{
 
 
 	element.innerHTML=txt1
-}
+}*/
 var clicker=()=>{
 		document.getElementById("img").click()
 		}

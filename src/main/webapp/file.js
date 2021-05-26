@@ -4,6 +4,40 @@
  * 
  */
 
+
+var getContactByCategory=()=>{
+	
+	
+	var category=document.getElementById("catid").selectedOptions[0].value;
+
+
+	var xhr=new XMLHttpRequest();
+	
+	
+	url=`/contact/tag/${category}`;
+	
+	xhr.open("GET", url, true);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send();
+	xhr.onload = function() {
+		
+	  var data = JSON.parse(this.responseText);
+	// console.log(data);
+     	var obj= data["contact"][0]["detail"] ;
+
+document.getElementById("contact").innerHTML=" ";
+document.getElementById("detail").innerHTML=" ";
+
+addfirtslastname(data," ");
+	  addDetail( data["contact"][0]["contact_id"],obj,data["contact"][0]["address"]  );
+
+
+ 
+	
+	
+	}
+	
+}
 var showMessage=()=>{
 
 
@@ -388,7 +422,9 @@ function addContact()
 	var address=document.getElementById("addressid").value;
 //	var contactType=document.getElementById("selectid").selectedOptions[0].value;
 	//   var value   =document.getElementById("inputid").value;
- 
+ 	 var tag=document.getElementById("tagid").selectedOptions[0].value;     
+    
+
        var x = document.getElementById("container1").querySelectorAll(".ex");
    
   var arr=new Array();
@@ -403,8 +439,8 @@ function addContact()
        
    
 
-     var obj={"contact":{"firstName":firstName,"lastName":lastName,"address":address,
-      "detail": arr}     };
+     var obj={"contact":{"firstName":firstName,"lastName":lastName,"tag":tag,"address":address,
+"detail": arr}     };
        
 //var obj=addcontactfield();
     console.log(JSON.stringify(obj));
@@ -910,6 +946,9 @@ xhr.send(JSON.stringify(obj));
 
 	xhr.onload=function()
 	{
+		cache.clear();
+		document.getElementById("contact").innerHTML=" ";
+		document.getElementById("detail").innserHTML=" ";
 		getContact();
 	}
 
@@ -1093,9 +1132,13 @@ function addfirtslastname(data,cursor) {
 			
 			 <div id="${data["contact"][i]["contact_id"]}" style="color:black;"  class="fx"   >
 		 <a  id="AFL${data["contact"][i]["contact_id"]}" onclick="addDetail('${data["contact"][i]["contact_id"]}', ${JSON.stringify(obj).split('"').join("&quot;")},'${data["contact"][i]["address"]}'   )" > 
-			<li contenteditable=false > ${data["contact"][i]["firstName"]} ${data["contact"][i]["lastName"]} </li>
+			<li  contenteditable=false > ${data["contact"][i]["firstName"]} ${data["contact"][i]["lastName"]} </li>
 			
 			 </a> 
+			   <li style="font-size:13px" contenteditable=false >
+
+           ${data["contact"][i]["tag"]}       </li>
+			
 			</div>
 			
 			
@@ -1103,6 +1146,7 @@ function addfirtslastname(data,cursor) {
 		
 			 
 			<img src= "images/delete.png" onclick="deleteContact('${data["contact"][i]["contact_id"]}')" width="40" height="40"> 
+			
 			<img src= "images/edit.png" onclick="editContact('${data["contact"][i]["contact_id"]}' ,${JSON.stringify(obj).split('"').join("&quot;")} )" style="padding:8px;"  width="40" height="25"   />
 			
 		`;

@@ -21,12 +21,12 @@ public class UserDaoImplementation implements UserDao {
 		Query q = new Query("User").setFilter(mailConstraint);
 		Entity entity = datastore.prepare(q).asSingleEntity();
 		if (entity != null) {
-           return false;
+			return false;
 		} else {
 			Entity e = new Entity("User", user.getUser_id());
 			e.setProperty("email", user.getEmail());
 			e.setProperty("active", user.isActive());
-			e.setProperty("image",user.getImage());
+			e.setProperty("image", user.getImage());
 			e.setProperty("password", user.getPassword());
 			e.setProperty("user_id", user.getUser_id());
 			Date date = user.getCreatedDate();
@@ -53,48 +53,57 @@ public class UserDaoImplementation implements UserDao {
 		return entity.getProperty("user_id").toString();
 
 	}
+
 	public JSONObject getUser(String userId) throws EntityNotFoundException {
-		DatastoreService ds= DatastoreServiceFactory.getDatastoreService();
+		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 
-		    Key k=KeyFactory.createKey("User", userId);
-		    Entity entity=ds.get(k);
-		    if(entity!=null) {
-		        
-		        JSONObject obj= new JSONObject();
-		          obj.put("email",entity.getProperty("email").toString());
-		        obj.put("image", entity.getProperty("image").toString());
-		        obj.put("active",(boolean) entity.getProperty("active"));
-		        obj.put("user_id", entity.getProperty("user_id").toString());
-		        long d=Long.parseLong(entity.getProperty("created").toString());
-		        Date date=new Date(d);
-		        obj.put("date", date);
-		        return obj;
-		        
-		    }
-		    else
-		    {
-		        return null;
-		    }
+		Key k = KeyFactory.createKey("User", userId);
+		Entity entity = ds.get(k);
+		if (entity != null) {
 
+			JSONObject obj = new JSONObject();
+			obj.put("email", entity.getProperty("email").toString());
+			obj.put("image", entity.getProperty("image").toString());
+			obj.put("active", (boolean) entity.getProperty("active"));
+			obj.put("user_id", entity.getProperty("user_id").toString());
+			long d = Long.parseLong(entity.getProperty("created").toString());
+			Date date = new Date(d);
+			obj.put("date", date);
+			return obj;
+
+		} else {
+			return null;
 		}
-	
-	
-	
-	public Boolean udpateImage(String email,String userId,String name) throws EntityNotFoundException {
 
-	    DatastoreService ds= DatastoreServiceFactory.getDatastoreService(); 
-	    System.out.println(userId);
-	    Key k=KeyFactory.createKey("User", userId);
-	    Entity entity=ds.get(k);
-	    if(entity!=null) {
-	        entity.setProperty("image",name+".png");
-	        ds.put(entity);
-	        return true;
-	    }
-	    else
-	    {
-	        return false;
-	    }    
+	}
+
+	public Boolean udpateImage( String userId, String name) throws EntityNotFoundException {
+
+		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+		System.out.println(userId);
+		Key k = KeyFactory.createKey("User", userId);
+		Entity entity = ds.get(k);
+		if (entity != null) {
+			entity.setProperty("image", name );
+			ds.put(entity);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean deleteUser(String userId) {
+
+		DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+		try {
+			Key k = KeyFactory.createKey("User", userId);
+			ds.delete(k);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
 	}
 
 }

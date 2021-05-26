@@ -1,9 +1,23 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    
+    
+ <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
+
+<%
+BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+%>
+
+
+    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
+
+
+
 <title>Insert title here</title>
 
 <style>
@@ -121,6 +135,11 @@ background-color:#e4ffff;
   transition:all 300ms ease-in-out;
   transform:translate(-50%,-50%) scale(1);
 }
+
+#myProfile{
+
+display:none;
+}
  
 
 
@@ -159,6 +178,7 @@ if(session.getAttribute("user_id")==null)
 
 
 <div class="imageHover" id="profileButton">
+
 <input type="button"  value="profile" onclick="getProfile();setActive('profileButton');toggleProfile();" />
 </div>
 <div class="imageHover active" id="feedButton">
@@ -177,7 +197,31 @@ if(session.getAttribute("user_id")==null)
 
 
 
-<div id="myProfile"></div>
+<div id="myProfile" >
+
+<div class="email">
+			<div class="profilePic" id="profilePic">
+				<img id="proPic"  onclick="clicker()" width="250" height="250" >
+				<form  action="<%=blobstoreService.createUploadUrl("/upload") %>"
+	id="myForm" method="POST" enctype="multipart/form-data">
+  		    		<input type="file" id="img" name="img" onchange="preview()" accept="image/*"  style="display:none;"    ><br><br>
+					<input type="submit" id="subButton"   style="display:none;">
+					
+				</form>
+			</div>
+			<div class="data">
+				<h4>Email:</h4>
+				
+				<ul>
+             <li id="emailHolder"></li></ul>
+			</div>		  
+ 		  </div>
+
+
+
+
+
+</div>
 
 
 <div   id="container" class="flex-container">
@@ -199,6 +243,13 @@ if(session.getAttribute("user_id")==null)
 firstName:     <input id="firstid"  name="firstName" required /><br/>
 lastName:             <input id="lastid" type="text" name="lastName"/><br/>
 address:   <input id="addressid" type="text" name="address"/><br/>
+tag:   <select id="tagid" name="tag" class="ex">
+	<option value="important">    important 
+ 	<option value="personal">    personal     
+ 	<option value="spam"> spam
+ 	<option value="official"> oficial
+ 	
+</select><br/>
 
 <div id="container1">
 contactType:   <select id="selectid" name="contactType" class="ex">
@@ -239,6 +290,16 @@ contactType:   <select id="selectid" name="contactType" class="ex">
  <br/>
  
  <div id="buttons">
+ 
+  <select id="catid" name="category" class="ex">
+	<option value="important">important     </option>
+ 	<option value="spam">spam         </option>
+ 	<option value="official">    official     </option>
+ 	<option value="personal">    personal     </option>
+  </select>
+  
+  <input type="button" value="category" onclick="getContactByCategory()"/>
+  
 <img src= "images/plusnew.jpg" onclick="togglePopup()" width="40" height="40"> 
 
 <img id="delete" src= "images/delete.png" onclick="getDeletedContact()" width="40" height="40"> 

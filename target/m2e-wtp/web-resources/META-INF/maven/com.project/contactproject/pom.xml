@@ -139,6 +139,16 @@
         <groupId>com.google.cloud.tools</groupId>
         <artifactId>appengine-maven-plugin</artifactId>
         <version>2.2.0</version>
+        
+        <configuration>
+<projectId>malkarajtraining12</projectId>
+<version>GCLOUD_CONFIG</version>
+</configuration>
+
+
+        
+        
+        
       </plugin>
 
 

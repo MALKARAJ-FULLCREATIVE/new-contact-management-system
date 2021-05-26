@@ -80,7 +80,7 @@ public class UserInfo extends HttpServlet {
 			out.println(obj1);		}
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	/*protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
         UserDao userOp=new UserDaoImplementation();
 		PrintWriter writer=response.getWriter();
@@ -143,8 +143,7 @@ public class UserInfo extends HttpServlet {
 			obj1.put("error", "No user found");
 			writer.println(obj1);		
 			}
-        
-/*
+ 
 	    StringBuffer jb = new StringBuffer();
 	    String line = null;
 	    BufferedReader reader = request.getReader();
@@ -192,9 +191,9 @@ public class UserInfo extends HttpServlet {
 		catch (FileUploadException e1) {
 			e1.printStackTrace();
 		}
-*/
+
 
         
-	}
+	}*/
 
 }

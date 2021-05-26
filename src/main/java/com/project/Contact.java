@@ -14,11 +14,18 @@ public class Contact {
 	private String contact_id;
 	private Date createdDate;  //Date
 	private Date updatedDate;
+	private String tag;
 	private boolean isDeleted;
 	
 	
 	
 	
+	public String getTag() {
+		return tag;
+	}
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
 	public String getUser_id() {
 		return user_id;
 	}
@@ -48,8 +55,9 @@ public class Contact {
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-	Contact(String firstName,String lastName,String address,String user_id)
+	Contact(String firstName,String lastName,String address,String user_id,String tag)
 	{
+		this.tag=tag;
 		this.firstName=firstName;
 		this.lastName=lastName;
 		this.address=address;

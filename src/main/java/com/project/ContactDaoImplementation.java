@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.QueryResultList;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 public class ContactDaoImplementation implements ContactDao, DetailDao {
@@ -27,7 +29,41 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	private static final int PAGE_SIZE = 20;
 	private static String cursorString;
 	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+	  MemcacheService cache = MemcacheServiceFactory.getMemcacheService();
 
+	  
+	  public void cacheContact(JSONObject contactJson)
+	  {
+		  String tag=contactJson.getString("tag");
+		  if(cache.get(tag)==null)
+			  
+		  {
+			  
+			  JSONArray jsonarr=new JSONArray();
+			  jsonarr.put(contactJson);
+			  
+			  cache.put(tag,jsonarr.toString());
+			  //System.out.println(cache.get(tag).toString());
+			  System.out.println(cache.get(tag));
+		  }
+		  else
+		  {
+			  String cat= cache.get(tag).toString();
+			  cache.delete(tag);
+			  System.out.println("inside else");
+			  System.out.println(cat);
+			 
+			  //JSONObject jsonobj=new JSONObject(cat);
+			  JSONArray jsonarr=new JSONArray(cat);
+			  jsonarr.put(contactJson);
+			  System.out.println(jsonarr);
+			   System.out.println(jsonarr.length());
+			  cache.put(tag,jsonarr.toString());
+			  
+		  }
+		  
+	  }
+	  
 	@Override
 	public String addContact(Contact c, String user_id) {
 
@@ -46,6 +82,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		contactEntity.setProperty("user_id", c.getUser_id());
 		contactEntity.setProperty("lastName", c.getLastName());
 		contactEntity.setProperty("address", c.getAddress());
+		contactEntity.setProperty("tag", c.getTag());
 		contactEntity.setProperty("contact_id", c.getContact_id());
 		Date date = c.getCreatedDate();
 		DateTime d = new DateTime(date);
@@ -54,6 +91,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		contactEntity.setProperty("isDeleted", c.isDeleted());
 
 		datastore.put(contactEntity);
+	
 
 		return c.getContact_id().toString();
 
@@ -89,7 +127,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 		JSONObject jsoncontact = jsonobject.getJSONObject("contact");
 
-		if (jsoncontact.length() != 4) {
+		if (jsoncontact.length() != 5) {
 
 			JSONObject obj = new JSONObject();
 			obj.put("status", false);
@@ -102,6 +140,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 		String firstName = jsoncontact.getString("firstName");
 		String lastName = jsoncontact.getString("lastName");
+		//String tag=jsoncontact.getString("tag");
 		String contactType;
 		String value;
 		boolean isValidEmail = false;
@@ -111,6 +150,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		createJson.put("user_id", user_id);
 		createJson.put("firstName", firstName);
 		createJson.put("lastName", lastName);
+		
 
 		boolean check = true;
 		int count = 0;
@@ -155,14 +195,15 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		if (Validation.isFirstNameExist(firstName) && Validation.isLastNameExist("lastName")) {
 
 			String address = jsoncontact.getString("address");
-
+                        String tag=      jsoncontact.getString("tag");
 			if (Validation.isValidAddress(address)) {
 				createJson.put("address", address);
 				jsonArray = jsoncontact.getJSONArray("detail");
 
-				Contact contact = new Contact(firstName, lastName, address, user_id);
+				Contact contact = new Contact(firstName, lastName, address, user_id,tag);
 				createJson.put("contact_id", contact.getContact_id());
 				createJson.put("created", contact.getCreatedDate());
+				createJson.put("tag", tag);
 
 				for (int i = 0; i < jsonArray.length(); i++) {
 					contactType = jsonArray.getJSONObject(i).getString("contactType");
@@ -249,6 +290,9 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		obj.put("code", 200);
 		obj.put("message", "added");
 		obj.put("contact", createJson);
+		
+		
+		cacheContact(createJson);
 		// response.getWriter().print(obj);
 		return obj;
 
@@ -258,6 +302,13 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		DateTime now = new DateTime();
 
 		return now.getMillis();
+	}
+	
+	public void changeTag(Entity contact,String tag)
+	{
+		contact.setProperty("updated", updatedDate());
+		contact.setProperty("tag", tag);
+		datastore.put(contact);
 	}
 
 	public void changeFirstName(Entity contact, String firstName) {
@@ -354,6 +405,27 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			}
 
 		}
+		if (jsonContact.has("tag") == true) {
+			String tag = jsonContact.getString("tag");
+
+			if (Validation.isTagExist(tag)) {
+				changeTag(contactEntity, tag);
+				long d = Long.parseLong(contactEntity.getProperty("updated").toString());
+				Date date = new Date(d);
+				createJson.put("updated", date);
+				createJson.put("tag", tag);
+			} else {
+				JSONObject obj = new JSONObject();
+				// response.setStatus(400);
+				obj.put("status", false);
+				obj.put("code", 400);
+				obj.put("message", "firstName is not in proper format");
+				// response.getWriter().print(obj);
+				return obj;
+			}
+
+		}
+
 		if (jsonContact.has("lastName") == true) {
 			String lastName = jsonContact.getString("lastName");
 
@@ -497,6 +569,111 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 	}
 
+	
+	public   JSONObject getContactByCategory(String tag,String user_id)
+	{
+		
+
+		JSONArray contactList = new JSONArray();
+        
+        
+		if(cache.get(tag)==null) {
+			
+		long d;
+		Date date;
+		
+
+		Filter filter1 = new FilterPredicate("user_id", FilterOperator.EQUAL, user_id);
+		Filter propertyFilter = new FilterPredicate("isDeleted", FilterOperator.EQUAL, false);
+		Filter filter2=new FilterPredicate("tag",FilterOperator.EQUAL,tag);
+	
+		
+		CompositeFilter catdel = CompositeFilterOperator.and(filter1, propertyFilter,filter2);
+		
+		
+		Query q=new Query("Contact").addSort("updated", SortDirection.DESCENDING).setFilter(catdel);
+		
+		for(Entity contactEntity:datastore.prepare(q).asIterable())
+		{
+			JSONObject contact = new JSONObject();
+			contact.put("firstName", contactEntity.getProperty("firstName").toString());
+			contact.put("lastName", contactEntity.getProperty("lastName"));
+			contact.put("address", contactEntity.getProperty("address"));
+			contact.put("contact_id", contactEntity.getProperty("contact_id"));
+			contact.put("user_id", contactEntity.getProperty("user_id"));
+			d = Long.parseLong(contactEntity.getProperty("created").toString());
+			date = new Date(d);
+			contact.put("created", date);
+			d = Long.parseLong(contactEntity.getProperty("updated").toString());
+			date = new Date(d);
+			contact.put("updated", date);
+
+			JSONArray detailList = new JSONArray();
+			Filter propertyFilter1 = new FilterPredicate("isDeleted", FilterOperator.EQUAL, false);
+
+			Query qp = new Query("Detail").setAncestor(contactEntity.getKey())
+					.addSort("updated", SortDirection.DESCENDING).setFilter(propertyFilter1);
+			for (Entity detailEntity : datastore.prepare(qp).asIterable()) {
+				JSONObject detail = new JSONObject();
+
+				d = Long.parseLong(detailEntity.getProperty("created").toString());
+				date = new Date(d);
+				detail.put("created", date);
+
+				d = Long.parseLong(detailEntity.getProperty("updated").toString());
+				date = new Date(d);
+				detail.put("updated", date);
+
+				detail.put("contactType", detailEntity.getProperty("contactType"));
+				detail.put("value", detailEntity.getProperty("value"));
+				detail.put("detail_id", detailEntity.getProperty("detail_id"));
+				detail.put("contact_id", detailEntity.getProperty("contact_id"));
+
+				detailList.put(detail);
+			}
+			contact.put("detail", detailList);
+			
+			contactList.put(contact);
+
+		}
+           
+		cache.put(tag, contactList.toString());
+		
+		JSONObject obj = new JSONObject();
+		obj.put("status", true);
+		obj.put("code", 200);
+		obj.put("contact", contactList);
+		obj.put("message", "contact displayed by tag name :"+tag);
+ 		//contactList.put(jcursor);
+		return obj;
+
+		
+		
+		}
+		else
+		{
+			System.out.println("from cache");
+			
+			String cat= cache.get(tag).toString();
+			JSONArray jsonarr=new JSONArray(cat);
+			
+			
+			JSONObject obj = new JSONObject();
+			obj.put("status", true);
+			obj.put("code", 200);
+			obj.put("contact", jsonarr);
+			obj.put("message", "contact displayed by tag name :"+tag);
+	 		//contactList.put(jcursor);
+			return obj;
+
+			
+			
+			
+		}
+		
+		
+		
+	}
 	public JSONArray displayQuery(String startCursor,Query q, boolean val) {
 
 		System.out.println("displayquery");
@@ -530,6 +707,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			contact.put("address", contactEntity.getProperty("address"));
 			contact.put("contact_id", contactEntity.getProperty("contact_id"));
 			contact.put("user_id", contactEntity.getProperty("user_id"));
+			contact.put("tag", contactEntity.getProperty("tag"));
 			d = Long.parseLong(contactEntity.getProperty("created").toString());
 			date = new Date(d);
 			contact.put("created", date);
