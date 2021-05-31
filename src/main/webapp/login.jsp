@@ -8,7 +8,19 @@
 </head>
 <body>
 
+<%
 
+response.setHeader("Cache-Control","no-cache,no-store,must-revalidate");
+if(session.getAttribute("user_id")!=null)
+{
+	session.invalidate();
+	response.sendRedirect("/loginpage");
+	
+	
+	//response.sendRedirect("/");
+}
+
+%>
 
 <script>
 
