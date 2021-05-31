@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -79,7 +80,7 @@ import com.google.appengine.api.datastore.Key;
 
 public class ContactManagement extends HttpServlet  {
 	private static final long serialVersionUID = 1L;
-       
+	private static final Logger log = Logger.getLogger(ContactManagement.class.getName());
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -172,17 +173,19 @@ public class ContactManagement extends HttpServlet  {
 	}
 	
 	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
 	response.setContentType("application/json");
 	
-	   
+		  log.info("Your information log message.");
 
 	String pathInfo=request.getPathInfo();
 	HttpSession session =request.getSession(false);
 	
 	String cursor=request.getParameter("cursor");
 	//System.out.println(cursor+"hello gelosffjsdfj");
+	log.info("doGetRequest");
 
 	String tagInfo="";
 	
