@@ -102,7 +102,7 @@ public class ContactManagement extends HttpServlet  {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		
+		log.info("doPostService");
 	       response.setContentType("application/json");
 		StringBuffer jb = new StringBuffer();
 		  String line = null;
@@ -132,6 +132,8 @@ public class ContactManagement extends HttpServlet  {
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		
+		log.info("doPutService");
 		
 		  		response.setContentType("application/json");
 		  		StringBuffer jb = new StringBuffer();
@@ -179,13 +181,14 @@ public class ContactManagement extends HttpServlet  {
 	response.setContentType("application/json");
 	
 		  log.info("Your information log message.");
+		  
 
 	String pathInfo=request.getPathInfo();
 	HttpSession session =request.getSession(false);
 	
 	String cursor=request.getParameter("cursor");
 	//System.out.println(cursor+"hello gelosffjsdfj");
-	log.info("doGetRequest");
+	log.info("doGetService");
 
 	String tagInfo="";
 	
@@ -232,6 +235,9 @@ public class ContactManagement extends HttpServlet  {
 	}
 }
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+		
+		log.info("doDeleteService");
 		DatastoreService datastoreService=DatastoreServiceFactory.getDatastoreService();
 		response.setContentType("application/json");
 		

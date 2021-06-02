@@ -1,6 +1,7 @@
 package com.project;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,6 +27,7 @@ import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 public class ContactDaoImplementation implements ContactDao, DetailDao {
 
+	private static final Logger log = Logger.getLogger(ContactDaoImplementation.class.getName());
 	private static final int PAGE_SIZE = 20;
 	private static String cursorString;
 	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -34,11 +36,14 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	  
 	  public void cacheContact(JSONObject contactJson)
 	  {
+		  log.info("inside memcache");
+		 
+		  
 		  String tag=contactJson.getString("tag");
 		  if(cache.get(tag)==null)
 			  
 		  {
-			  
+			  log.info("data is not in cache it is getting added to the cache");
 			  JSONArray jsonarr=new JSONArray();
 			  jsonarr.put(contactJson);
 			  
@@ -48,6 +53,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		  }
 		  else
 		  {
+			  log.info("data is from cache");
 			  String cat= cache.get(tag).toString();
 			  cache.delete(tag);
 			  System.out.println("inside else");
@@ -67,6 +73,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	@Override
 	public String addContact(Contact c, String user_id) {
 
+		log.info("inside addContact()");
+		
 		Key key = KeyFactory.createKey("User", user_id);
 		Entity userEntity = null;
 		try {
@@ -101,6 +109,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	public String addDetail(Detail d, String contact_id, String user_id) throws EntityNotFoundException {
 		// TODO Auto-generated method stub
 
+		log.info("inside addDetail()");
 		Key key = new KeyFactory.Builder("User", user_id).addChild("Contact", contact_id).getKey();
 
 		// Key key=KeyFactory.createKey("Contact",contact_id);
@@ -125,15 +134,17 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	@Override
 	public JSONObject addContactWithDetails(JSONObject jsonobject, String user_id) {
 
+		log.info("inside addContactWithDetails()");
 		JSONObject jsoncontact = jsonobject.getJSONObject("contact");
 
 		if (jsoncontact.length() != 5) {
 
+			
 			JSONObject obj = new JSONObject();
 			obj.put("status", false);
 			obj.put("code", 400);
 			obj.put("message", "some attribute values missing");
-
+             log.warning("some attribute values missing");
 			return obj;
 
 		}
@@ -188,6 +199,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			obj.put("code", 400);
 			obj.put("message", count + "th " + "detail" + " has improper format of email/phone");
 			// response.getWriter().print(obj);
+			log.warning(count + "th " + "detail" + " has improper format of email/phone");
 			return obj;
 
 		}
@@ -237,6 +249,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 								obj.put("status", "failed");
 								obj.put("code", 400);
 								obj.put("message", "entity not found");
+								log.warning("entity not found");
 								// response.getWriter().print(obj);
 								return obj;
 							}
@@ -248,6 +261,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 							obj.put("message", i + 1 + "th " + "detail"
 									+ " didnt get added due to improper format of email/phone");
 							// response.getWriter().print(obj);
+							log.warning(i + 1 + "th " + "detail"
+									+ " didnt get added due to improper format of email/phone");
 							return obj;
 
 						}
@@ -259,6 +274,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 						obj.put("message", i + 1 + "th " + "detail"
 								+ "didnt get added due to improper contactType it must be either email/phone");
 						// response.getWriter().print(obj);
+						log.warning(i + 1 + "th " + "detail"
+								+ "didnt get added due to improper contactType it must be either email/phone");
 						return obj;
 
 					}
@@ -271,6 +288,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 				obj.put("code", 400);
 				obj.put("message", "improper address format,it must be alphanumeric");
 				// response.getWriter().print(obj);
+				log.warning("improper address format,it must be alphanumeric");
 				return obj;
 			}
 
@@ -280,6 +298,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			obj.put("code", 400);
 			obj.put("message", "firstName/lastName is not in proper format");
 			// response.getWriter().print(obj);
+			log.warning("firstName/lastName is not in proper format");
 			return obj;
 		}
 
@@ -294,6 +313,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		
 		cacheContact(createJson);
 		// response.getWriter().print(obj);
+		log.info("contact added successfully");
 		return obj;
 
 	}
@@ -353,6 +373,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	@Override
 	public JSONObject updateContactWithDetails(JSONObject jsonObject, String contact_id, String user_id) {
 
+		log.info("inside updateContactwithDetails()");
 		JSONObject createJson = new JSONObject();
 
 		Entity contactEntity = null;
@@ -372,6 +393,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 				obj.put("status", "failed");
 				obj.put("code", 400);
 				obj.put("message", "contact doesnt exist/ deleted");
+				log.warning("contact doesnt exist/ deleted");
 				return obj;
 			}
 
@@ -381,6 +403,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			obj.put("status", "failed");
 			obj.put("code", 400);
 			obj.put("message", "entity not found");
+			log.warning("entity not found");
 			// response.getWriter().print(obj);
 			return obj;
 		}
@@ -400,6 +423,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 				obj.put("status", false);
 				obj.put("code", 400);
 				obj.put("message", "firstName is not in proper format");
+				log.warning("firstName is not in proper format");
 				// response.getWriter().print(obj);
 				return obj;
 			}
@@ -420,6 +444,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 				obj.put("status", false);
 				obj.put("code", 400);
 				obj.put("message", "firstName is not in proper format");
+				log.warning("firstName is not in proper format");
 				// response.getWriter().print(obj);
 				return obj;
 			}
@@ -442,6 +467,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 				obj.put("status", false);
 				obj.put("code", 400);
 				obj.put("message", "lastName is not in proper format");
+				log.warning("lastName is not in proper format");
 				// response.getWriter().print(obj);
 				return obj;
 
@@ -461,6 +487,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 				obj.put("status", false);
 				obj.put("code", 400);
 				obj.put("message", "improper address format,it must be alphanumeric");
+				log.warning("improper address format,it must be alphanumeric");
 				// response.getWriter().print(obj);
 				return obj;
 			}
@@ -491,6 +518,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 					obj.put("status", "failed");
 					obj.put("code", 400);
 					obj.put("message", "entity not found");
+					log.warning("entity not found");
 					// response.getWriter().print(obj);
 					return obj;
 				}
@@ -511,6 +539,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 						obj.put("status", false);
 						obj.put("code", 400);
 						obj.put("message", "phonenumber/email type mismatched");
+						log.warning("phonenumber/email type mismatched");
 						// response.getWriter().print(obj);
 						return obj;
 
@@ -534,6 +563,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 							obj.put("status", false);
 							obj.put("code", 400);
 							obj.put("message", "phonenumber/email is not in proper format!");
+							log.warning("phonenumber/email is not in proper format!");
 							// response.getWriter().print(obj);
 							return obj;
 						}
@@ -544,6 +574,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 						obj.put("status", false);
 						obj.put("code", 400);
 						obj.put("message", "contacttype is not in proper format!");
+						log.warning("contacttype is not in proper format!");
 						// response.getWriter().print(obj);
 						return obj;
 
@@ -563,6 +594,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		obj.put("code", 200);
 		obj.put("contact", createJson);
 		obj.put("message", "updated");
+		log.warning("contact updated successfully");
 		// response.getWriter().print(obj);
 
 		return obj;
@@ -572,7 +604,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	
 	public   JSONObject getContactByCategory(String tag,String user_id)
 	{
-		
+			log.info("inside getContactByCategory() ");
 
 		JSONArray contactList = new JSONArray();
         
@@ -644,7 +676,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		obj.put("code", 200);
 		obj.put("contact", contactList);
 		obj.put("message", "contact displayed by tag name :"+tag);
- 		//contactList.put(jcursor);
+ 		log.info("contact displayed by tag name by request");
+		//contactList.put(jcursor);
 		return obj;
 
 		
@@ -663,6 +696,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			obj.put("code", 200);
 			obj.put("contact", jsonarr);
 			obj.put("message", "contact displayed by tag name :"+tag);
+			log.info("contact displayed by tag name from cache");
 	 		//contactList.put(jcursor);
 			return obj;
 
@@ -878,6 +912,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	@Override
 	public JSONObject deleteContact(String contact_id, String user_id) {
 
+		log.info("inside deleteContact()");
 		long d;
 		Date date;
 
@@ -942,6 +977,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		obj.put("contact", contact);
 		obj.put("message", "contact deleted");
 		// response.getWriter().print(obj);
+		log.info("contact deleted");
 		return obj;
 		// return demo;
 
@@ -950,6 +986,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	@Override
 	public JSONObject deleteDetail(String contact_id, String detail_id, String user_id) {
 
+		log.info("inside deleteDetail()");
 		Entity detail = null;
 		Key key = new KeyFactory.Builder("User", user_id).addChild("Contact", contact_id).addChild("Detail", detail_id)
 				.getKey();
@@ -975,7 +1012,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		obj.put("code", 200);
 		obj.put("detail", jsonobject);
 		obj.put("message", "detail deleted");
-
+		log.info("detail deleted");
 		return obj;
 
 	}

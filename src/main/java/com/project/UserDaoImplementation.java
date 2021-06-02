@@ -1,6 +1,7 @@
 package com.project;
 
 import java.util.Date;
+import java.util.logging.Logger;
 
 import org.json.JSONObject;
 
@@ -11,9 +12,11 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 public class UserDaoImplementation implements UserDao {
+	private static final Logger log = Logger.getLogger(UserDaoImplementation.class.getName());
 
 	@Override
 	public boolean createUser(User user) {
+		log.info(" inside createUser()");
 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
