@@ -13,7 +13,7 @@ public class Contact {
 	private String user_id;
 	private String contact_id;
 	private Date createdDate;  //Date
-	private Date updatedDate;
+	private Date updatedDate;  
 	private String tag;
 	private boolean isDeleted;
 	

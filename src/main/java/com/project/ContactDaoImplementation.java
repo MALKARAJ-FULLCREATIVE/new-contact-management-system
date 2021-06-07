@@ -31,10 +31,10 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	private static final int PAGE_SIZE = 20;
 	private static String cursorString;
 	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-	  MemcacheService cache = MemcacheServiceFactory.getMemcacheService();
+//	  MemcacheService cache = MemcacheServiceFactory.getMemcacheService();
 
 	  
-	  public void cacheContact(JSONObject contactJson)
+	 /* public void cacheContact(JSONObject contactJson)
 	  {
 		  log.info("inside memcache");
 		 
@@ -68,14 +68,14 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			  
 		  }
 		  
-	  }
+	  }*/
 	  
 	@Override
 	public String addContact(Contact c, String user_id) {
 
 		log.info("inside addContact()");
 		
-		Key key = KeyFactory.createKey("User", user_id);
+		/*Key key = KeyFactory.createKey("User", user_id);
 		Entity userEntity = null;
 		try {
 			userEntity = datastore.get(key);
@@ -83,15 +83,16 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 
-		Entity contactEntity = new Entity("Contact", c.getContact_id(), userEntity.getKey());
+		Entity contactEntity = new Entity("Contact", c.getContact_id());
 
 		contactEntity.setProperty("firstName", c.getFirstName());
 		contactEntity.setProperty("user_id", c.getUser_id());
 		contactEntity.setProperty("lastName", c.getLastName());
 		contactEntity.setProperty("address", c.getAddress());
 		contactEntity.setProperty("tag", c.getTag());
-		contactEntity.setProperty("contact_id", c.getContact_id());
+		//contactEntity.setProperty("contact_id", c.getContact_id());
 		Date date = c.getCreatedDate();
 		DateTime d = new DateTime(date);
 		contactEntity.setProperty("created", d.getMillis());
@@ -110,17 +111,18 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		// TODO Auto-generated method stub
 
 		log.info("inside addDetail()");
-		Key key = new KeyFactory.Builder("User", user_id).addChild("Contact", contact_id).getKey();
+		//Key key = new KeyFactory.Builder("Contact", contact_id).getKey();
 
-		// Key key=KeyFactory.createKey("Contact",contact_id);
+		
+		 Key key=KeyFactory.createKey("Contact",contact_id);
 		Entity contactEntity = datastore.get(key);
 
 		Entity detailEntity = new Entity("Detail", d.getDetail_id(), contactEntity.getKey());
 
 		detailEntity.setProperty("contactType", d.getContactType());
 		detailEntity.setProperty("value", d.getValue());
-		detailEntity.setProperty("detail_id", d.getDetail_id());
-		detailEntity.setProperty("contact_id", contact_id);
+		//detailEntity.setProperty("detail_id", d.getDetail_id());
+		//detailEntity.setProperty("contact_id", contact_id);
 		Date date = d.getCreatedDate();
 		DateTime dateTime = new DateTime(date);
 
@@ -311,7 +313,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		obj.put("contact", createJson);
 		
 		
-		cacheContact(createJson);
+		//cacheContact(createJson);
 		// response.getWriter().print(obj);
 		log.info("contact added successfully");
 		return obj;
@@ -382,9 +384,9 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		// String contact_id=jsonContact.getString("contact_id");
 		createJson.put("contact_id", contact_id);
 
-		Key key = new KeyFactory.Builder("User", user_id).addChild("Contact", contact_id).getKey();
+		//Key key = new KeyFactory.Builder("User", user_id).addChild("Contact", contact_id).getKey();
 
-		// Key key=KeyFactory.createKey("Contact",contact_id);
+		Key key=KeyFactory.createKey("Contact",contact_id);
 		try {
 			contactEntity = datastore.get(key);
 			if (contactEntity.getProperty("isDeleted").equals(true)) {
@@ -505,8 +507,11 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 				String detail_id = arr.getJSONObject(i).getString("detail_id");
 
-				Key k = new KeyFactory.Builder("User", user_id).addChild("Contact", detailContact_id)
-						.addChild("Detail", detail_id).getKey();
+Key k = new KeyFactory.Builder("Contact", detailContact_id).addChild("Detail", detail_id).getKey();
+				
+				
+				//Key k=KeyFactory.createKey("Contact",contact_id);
+
 
 				try {
 					detailEntity = datastore.get(k);
@@ -609,7 +614,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		JSONArray contactList = new JSONArray();
         
         
-		if(cache.get(tag)==null) {
+	//	if(cache.get(tag)==null) {
 			
 		long d;
 		Date date;
@@ -631,7 +636,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			contact.put("firstName", contactEntity.getProperty("firstName").toString());
 			contact.put("lastName", contactEntity.getProperty("lastName"));
 			contact.put("address", contactEntity.getProperty("address"));
-			contact.put("contact_id", contactEntity.getProperty("contact_id"));
+			contact.put("contact_id", contactEntity.getKey().getName());
 			contact.put("user_id", contactEntity.getProperty("user_id"));
 			d = Long.parseLong(contactEntity.getProperty("created").toString());
 			date = new Date(d);
@@ -658,8 +663,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 				detail.put("contactType", detailEntity.getProperty("contactType"));
 				detail.put("value", detailEntity.getProperty("value"));
-				detail.put("detail_id", detailEntity.getProperty("detail_id"));
-				detail.put("contact_id", detailEntity.getProperty("contact_id"));
+				detail.put("detail_id", detailEntity.getKey().getName());
+				detail.put("contact_id", contactEntity.getKey().getName());
 
 				detailList.put(detail);
 			}
@@ -669,7 +674,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 		}
            
-		cache.put(tag, contactList.toString());
+		//cache.put(tag, contactList.toString());
 		
 		JSONObject obj = new JSONObject();
 		obj.put("status", true);
@@ -682,8 +687,9 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 		
 		
-		}
-		else
+	//	}
+		
+	/*	else
 		{
 			System.out.println("from cache");
 			
@@ -705,9 +711,10 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			
 		}
 		
-		
+		*/
 		
 	}
+	
 	public JSONArray displayQuery(String startCursor,Query q, boolean val) {
 
 		System.out.println("displayquery");
@@ -739,7 +746,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 			contact.put("firstName", contactEntity.getProperty("firstName").toString());
 			contact.put("lastName", contactEntity.getProperty("lastName"));
 			contact.put("address", contactEntity.getProperty("address"));
-			contact.put("contact_id", contactEntity.getProperty("contact_id"));
+			contact.put("contact_id", contactEntity.getKey().getName());
 			contact.put("user_id", contactEntity.getProperty("user_id"));
 			contact.put("tag", contactEntity.getProperty("tag"));
 			d = Long.parseLong(contactEntity.getProperty("created").toString());
@@ -767,8 +774,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 				detail.put("contactType", detailEntity.getProperty("contactType"));
 				detail.put("value", detailEntity.getProperty("value"));
-				detail.put("detail_id", detailEntity.getProperty("detail_id"));
-				detail.put("contact_id", detailEntity.getProperty("contact_id"));
+				detail.put("detail_id", detailEntity.getKey().getName());
+				detail.put("contact_id", contactEntity.getKey().getName());
 
 				detailList.put(detail);
 			}
@@ -850,15 +857,15 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 				detail.put("contactType", detailEntity.getProperty("contactType"));
 				detail.put("value", detailEntity.getProperty("value"));
-				detail.put("detail_id", detailEntity.getProperty("detail_id"));
-				detail.put("contact_id", detailEntity.getProperty("contact_id"));
+				detail.put("detail_id", detailEntity.getKey().getName());
+				detail.put("contact_id", detailEntity.getParent().getName());
 
 				detailList.put(detail);
 
 			}
 			contact.put("firstName", contactEntity.getProperty("firstName"));
 			contact.put("lastName", contactEntity.getProperty("lastName"));
-			contact.put("contact_id", contactEntity.getProperty("contact_id"));
+			contact.put("contact_id", contactEntity.getKey().getName());
 			d = Long.parseLong(contactEntity.getProperty("created").toString());
 			date = new Date(d);
 			contact.put("created", date);
@@ -916,8 +923,10 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		long d;
 		Date date;
 
-		Key key = new KeyFactory.Builder("User", user_id).addChild("Contact", contact_id).getKey();
-
+//		Key key = new KeyFactory.Builder("User", user_id).addChild("Contact", contact_id).getKey();
+		
+   Key key=KeyFactory.createKey("Contact",contact_id);
+   
 		Entity contactEntity = null;
 		try {
 			contactEntity = datastore.get(key);
@@ -947,8 +956,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 			detail.put("contactType", detailEntity.getProperty("contactType"));
 			detail.put("value", detailEntity.getProperty("value"));
-			detail.put("detail_id", detailEntity.getProperty("detail_id"));
-			detail.put("contact_id", detailEntity.getProperty("contact_id"));
+			detail.put("detail_id", detailEntity.getKey().getName());
+			detail.put("contact_id", contact_id);
 
 			detailList.put(detail);
 			detailEntity.setProperty("isDeleted", true);
@@ -961,7 +970,7 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 		contact.put("firstName", contactEntity.getProperty("firstName"));
 		contact.put("lastName", contactEntity.getProperty("lastName"));
-		contact.put("contact_id", contactEntity.getProperty("contact_id"));
+		contact.put("contact_id", contactEntity.getKey().getName());
 		d = Long.parseLong(contactEntity.getProperty("created").toString());
 		date = new Date(d);
 		contact.put("created", date);
@@ -988,9 +997,13 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 		log.info("inside deleteDetail()");
 		Entity detail = null;
-		Key key = new KeyFactory.Builder("User", user_id).addChild("Contact", contact_id).addChild("Detail", detail_id)
-				.getKey();
+		//Key key = new KeyFactory.Builder("User", user_id).addChild("Contact", contact_id).addChild("Detail", detail_id)
+			//	.getKey();
 
+		Key key = new KeyFactory.Builder("Contact", contact_id).addChild("Detail", detail_id)
+			.getKey();
+		
+		  
 		try {
 			detail = datastore.get(key);
 		} catch (EntityNotFoundException e) {
@@ -1004,8 +1017,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 		JSONObject jsonobject = new JSONObject();
 		jsonobject.put("contactType", detail.getProperty("contactType"));
 		jsonobject.put("value", detail.getProperty("value"));
-		jsonobject.put("contact_id", detail.getProperty("contact_id"));
-		jsonobject.put("detail_id", detail.getProperty("detail_id "));
+		jsonobject.put("contact_id", contact_id);
+		jsonobject.put("detail_id", detail_id);
 
 		JSONObject obj = new JSONObject();
 		obj.put("status", true);

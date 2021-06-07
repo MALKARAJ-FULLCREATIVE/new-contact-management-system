@@ -31,7 +31,7 @@ public class UserDaoImplementation implements UserDao {
 			e.setProperty("active", user.isActive());
 			e.setProperty("image", user.getImage());
 			e.setProperty("password", user.getPassword());
-			e.setProperty("user_id", user.getUser_id());
+			//e.setProperty("user_id", user.getUser_id());
 			Date date = user.getCreatedDate();
 			DateTime d = new DateTime(date);
 			e.setProperty("created", d.getMillis());
@@ -53,7 +53,7 @@ public class UserDaoImplementation implements UserDao {
 
 		Entity entity = ds.prepare(q).asSingleEntity();
 
-		return entity.getProperty("user_id").toString();
+		return entity.getKey().getName();
 
 	}
 
@@ -68,7 +68,7 @@ public class UserDaoImplementation implements UserDao {
 			obj.put("email", entity.getProperty("email").toString());
 			obj.put("image", entity.getProperty("image").toString());
 			obj.put("active", (boolean) entity.getProperty("active"));
-			obj.put("user_id", entity.getProperty("user_id").toString());
+			obj.put("user_id", entity.getKey().getName());
 			long d = Long.parseLong(entity.getProperty("created").toString());
 			Date date = new Date(d);
 			obj.put("date", date);

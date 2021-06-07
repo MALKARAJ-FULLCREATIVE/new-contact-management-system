@@ -74,6 +74,7 @@ public class User {
 	public void setUser_id(String user_id) {
 		this.user_id = user_id;
 	}
+	
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
