@@ -100,10 +100,10 @@ public class LoginPage extends HttpServlet {
 		  {
 			  JSONObject obj=new JSONObject();
 			  JSONObject obj1=new JSONObject();
-			  response.setStatus(400);
+			  response.setStatus(200);
 			  obj1.put("email", email);
 			  obj.put("success", false);
-			  obj.put("code", 400);
+			  obj.put("code", 200);
 			  obj.put("message", "Login failed");
 			  out.println(obj);
 			  

@@ -1,0 +1,106 @@
+runtime: java8
+inbound_services:
+- warmup
+derived_file_type:
+- java_precompiled
+threadsafe: True
+auto_id_policy: default
+beta_settings:
+  'source_reference': 'https://github.com/MALKARAJ-FULLCREATIVE/new-contact-management-system.git#5896194a04a38bf09359c17f73bd7490367a56b5'
+api_version: 'user_defined'
+handlers:
+- url: (/.*\.js)
+  static_files: __static__\1
+  upload: __NOT_USED__
+  require_matching_file: True
+  login: optional
+  secure: optional
+  expiration: 1m
+- url: (/profile_pics/.*\.png)
+  static_files: __static__\1
+  upload: __NOT_USED__
+  require_matching_file: True
+  login: optional
+  secure: optional
+- url: (/images/plusnew\.jpg)
+  static_files: __static__\1
+  upload: __NOT_USED__
+  require_matching_file: True
+  login: optional
+  secure: optional
+  expiration: 1h
+- url: (/images/.*\.png)
+  static_files: __static__\1
+  upload: __NOT_USED__
+  require_matching_file: True
+  login: optional
+  secure: optional
+  expiration: 1m
+- url: /
+  script: unused
+  login: optional
+  secure: optional
+- url: /_ah/.*
+  script: unused
+  login: optional
+  secure: optional
+- url: /contact
+  script: unused
+  login: optional
+  secure: optional
+- url: /cron/destruction
+  script: unused
+  login: optional
+  secure: optional
+- url: /register
+  script: unused
+  login: optional
+  secure: optional
+- url: /enqueue
+  script: unused
+  login: optional
+  secure: optional
+- url: /upload
+  script: unused
+  login: optional
+  secure: optional
+- url: /logout
+  script: unused
+  login: optional
+  secure: optional
+- url: /hello
+  script: unused
+  login: optional
+  secure: optional
+- url: /user
+  script: unused
+  login: optional
+  secure: optional
+- url: .*\.jsp
+  script: unused
+  login: optional
+  secure: optional
+- url: /.*/
+  script: unused
+  login: optional
+  secure: optional
+- url: /contact/.*
+  script: unused
+  login: optional
+  secure: optional
+- url: /google
+  script: unused
+  login: optional
+  secure: optional
+- url: /serve
+  script: unused
+  login: optional
+  secure: optional
+- url: /worker
+  script: unused
+  login: optional
+  secure: optional
+- url: /loginpage
+  script: unused
+  login: optional
+  secure: optional

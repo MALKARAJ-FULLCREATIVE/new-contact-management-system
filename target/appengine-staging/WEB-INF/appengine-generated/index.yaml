@@ -1,0 +1,13 @@
+indexes:
+- kind: "Contact"
+  properties:
+  - name: "isDeleted"
+  - name: "user_id"
+  - name: "updated"
+    direction: desc
+- kind: "Detail"
+  ancestor: yes
+  properties:
+  - name: "isDeleted"
+  - name: "updated"
+    direction: desc

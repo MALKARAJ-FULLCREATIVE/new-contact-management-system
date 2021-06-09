@@ -101,18 +101,18 @@ public class GoogleAuthentication extends HttpServlet {
 						obj.put("user", obj1);
 						out.println(obj);
 
-					} else {
+					} /*else {
 						JSONObject obj = new JSONObject();
 						JSONObject obj1 = new JSONObject();
 						response.setStatus(200);
 						obj1.put("email", email);
-						obj.put("success", false);
+						obj.put("success", true);
 						obj.put("code", 200);
 						obj.put("message", "user already exist");
 						obj.put("user", obj1);
 						out.println(obj);
 
-					}
+					}*/
 
 		
 			} 
