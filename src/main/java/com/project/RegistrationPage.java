@@ -87,10 +87,10 @@ public class RegistrationPage extends HttpServlet {
 		} else {
 			JSONObject obj = new JSONObject();
 			JSONObject obj1 = new JSONObject();
-			response.setStatus(200);
+			response.setStatus(400);
 			obj1.put("email", email);
 			obj.put("success", false);
-			obj.put("code", 200);
+			obj.put("code", 400);
 			obj.put("message", "user already exist");
 			obj.put("user", obj1);
 			out.println(obj);

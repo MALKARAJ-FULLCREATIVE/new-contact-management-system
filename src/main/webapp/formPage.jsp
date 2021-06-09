@@ -15,6 +15,8 @@ BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService(
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<meta name="google-signin-client_id" content="354739725161-49gg1fnf7qhehejirguegte1ovlkaup2.apps.googleusercontent.com">
+
 
 
 
@@ -324,6 +326,35 @@ contactType:   <select id="selectid" name="contactType" class="ex">
 
 <script type="text/javascript" src="profilejs.js">
 </script>
+
+
+
+<script>
+
+    function signOut() {
+      
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+
+    logoutfn();
+  }
+  
+function onLoad() {
+gapi.load('auth2', function() {
+gapi.auth2.init();
+});
+}
+
+</script>
+
+
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+
+
+
 
 
 </body>
