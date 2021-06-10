@@ -44,6 +44,7 @@ var showMessage=()=>{
 
 
 document.getElementById("contact").innerHTML="";
+document.getElementById("detail").innerHTML="";
 getContact(cache.get("cursor"))
 
 /*
