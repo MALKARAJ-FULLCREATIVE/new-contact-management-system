@@ -328,27 +328,27 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 	
 	public void changeTag(Entity contact,String tag)
 	{
-		contact.setProperty("updated", updatedDate());
+	//	contact.setProperty("updated", updatedDate());
 		contact.setProperty("tag", tag);
 		datastore.put(contact);
 	}
 
 	public void changeFirstName(Entity contact, String firstName) {
-		contact.setProperty("updated", updatedDate());
+	//	contact.setProperty("updated", updatedDate());
 		contact.setProperty("firstName", firstName);
 		datastore.put(contact);
 
 	}
 
 	public void changeLastName(Entity contact, String lastName) {
-		contact.setProperty("updated", updatedDate());
+	//	contact.setProperty("updated", updatedDate());
 		contact.setProperty("lastName", lastName);
 		datastore.put(contact);
 
 	}
 
 	public void changeAddress(Entity contact, String address) {
-		contact.setProperty("updated", updatedDate());
+	//	contact.setProperty("updated", updatedDate());
 		contact.setProperty("address", address);
 		datastore.put(contact);
 
@@ -356,8 +356,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 	public void changeContactType(Entity detail, Entity contact, String contactType) {
 		long date = updatedDate();
-		contact.setProperty("updated", date);
-		detail.setProperty("updated", date);
+	//	contact.setProperty("updated", date);
+	//	detail.setProperty("updated", date);
 		detail.setProperty("contactType", contactType);
 		datastore.put(detail);
 
@@ -365,8 +365,8 @@ public class ContactDaoImplementation implements ContactDao, DetailDao {
 
 	public void changeValue(Entity detail, Entity contact, String email) {
 		long date = updatedDate();
-		contact.setProperty("updated", date);
-		detail.setProperty("updated", date);
+		//contact.setProperty("updated", date);
+		//detail.setProperty("updated", date);
 		detail.setProperty("value", email);
 		datastore.put(detail);
 
