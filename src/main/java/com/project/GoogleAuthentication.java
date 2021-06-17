@@ -87,10 +87,12 @@ public class GoogleAuthentication extends HttpServlet {
 				  user.setImage(pictureUrl);
 				  user.setActive(true);
 				 boolean check=u.createUser(user);
-				  session.setAttribute("user_id", user_id);
-				 
+                  //session.setAttribute("idToken", idToken);
+                  //log.info("idToken"+idToken);
 				  if (check == true) {
 
+                    
+                    session.setAttribute("user_id",idTokenString);
 						JSONObject obj = new JSONObject();
 						JSONObject obj1 = new JSONObject();
 						response.setStatus(200);
@@ -98,7 +100,8 @@ public class GoogleAuthentication extends HttpServlet {
 						obj.put("success", true);
 						obj.put("code", 200);
 						obj.put("message", "registration successfull!");
-						obj.put("user", obj1);
+                        obj.put("user", obj1);
+                        log.info("registration successful"+obj);
 						out.println(obj);
 
 					} else {
@@ -113,7 +116,7 @@ public class GoogleAuthentication extends HttpServlet {
 						out.println(obj);*/
 						
 						
-						  session.setAttribute("user_id",u.getUserId(email, " "));
+						  session.setAttribute("user_id",idTokenString);
 							JSONObject obj = new JSONObject();
 							JSONObject obj1 = new JSONObject();
 							response.setStatus(200);
@@ -121,7 +124,8 @@ public class GoogleAuthentication extends HttpServlet {
 							obj.put("success", true);
 							obj.put("code", 200);
 							obj.put("message", "user already exist");
-							obj.put("user", obj1);
+                            obj.put("user", obj1);
+                            log.info("user already exist"+obj);
 							out.println(obj);
 						   
 						
@@ -137,7 +141,7 @@ public class GoogleAuthentication extends HttpServlet {
 			  response.setStatus(400);
 			  obj1.put("success", false);
 			  obj1.put("code",400);
-			  obj1.put("error","Invalid ID token");
+              obj1.put("error","Invalid ID token");
    			  out.println(obj1);
 
 				

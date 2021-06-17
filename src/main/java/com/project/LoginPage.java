@@ -3,6 +3,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +20,8 @@ import org.mindrot.jbcrypt.BCrypt;
  */
 @WebServlet("/loginpage")
 public class LoginPage extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+      private static final Logger log = Logger.getLogger(LoginPage.class.getName());	
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -44,6 +46,27 @@ public class LoginPage extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+    protected void doFilter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+
+        HttpSession session = req.getSession(false);
+
+        log.info("inside doFiter() ");
+
+        if(session==null)
+        {
+            res.sendRedirect("/loginpage");
+        }
+        else
+        {
+             res.sendRedirect("/");
+        }
+
+    }
+
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
@@ -76,14 +99,11 @@ public class LoginPage extends HttpServlet {
 		  HttpSession session=request.getSession();
 		  UserDao u=new UserDaoImplementation();
 		  
-		 
+
+
 		  if(Validation.isUserExist(email, plainText))
 		  {
 			  session.setAttribute("user_id",u.getUserId(email, plainText));
-			   
-			  
-			  
-			   
 			  JSONObject obj=new JSONObject();
 			  JSONObject obj1=new JSONObject();
 			  response.setStatus(200);

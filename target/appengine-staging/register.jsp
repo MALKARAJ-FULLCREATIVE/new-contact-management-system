@@ -52,7 +52,10 @@ function register()
 		xhr.onload = function() {
 
 			var data=  JSON.parse(this.responseText);
-			
+        
+            
+
+
 			if(data["success"]==true)
 				{
 				
@@ -66,12 +69,31 @@ function register()
 			
 			
 			
-			}
-		
-	
-	
+            }
+/*     fetch("https://georgefulltraining12.uc.r.appspot.com/register",{
 
+        method:"POST",
+
+        body:JSON.stringify({
+            "email":email,
+            "password":password,
+
+        }),
+         
+
+
+
+
+     })
+     .then(resonse=> response.json())
+     .then(json=>console.log(json));
+
+     
+	
+	
+*/
 }
+
 
 
 
