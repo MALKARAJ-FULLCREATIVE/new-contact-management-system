@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="10" failures="0" name="com.project.Testing" time="0.669" errors="0" skipped="0">
+<testsuite tests="10" failures="0" name="com.project.Testing" time="0.512" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
     <property name="java.vm.version" value="11.0.11+9-post-Debian-1deb10u1"/>
@@ -60,14 +60,14 @@
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="com.project.Testing" name="contactTypeFailTest" time="0.574"/>
-  <testcase classname="com.project.Testing" name="contactTypePassTest" time="0.014"/>
-  <testcase classname="com.project.Testing" name="emailFailTest" time="0.009"/>
-  <testcase classname="com.project.Testing" name="firstNamePassTest" time="0.033"/>
-  <testcase classname="com.project.Testing" name="emailPassTest" time="0.017"/>
-  <testcase classname="com.project.Testing" name="phoneNumberFailTest" time="0.005"/>
+  <testcase classname="com.project.Testing" name="contactTypeFailTest" time="0.433"/>
+  <testcase classname="com.project.Testing" name="contactTypePassTest" time="0.005"/>
+  <testcase classname="com.project.Testing" name="emailFailTest" time="0.013"/>
+  <testcase classname="com.project.Testing" name="firstNamePassTest" time="0.017"/>
+  <testcase classname="com.project.Testing" name="emailPassTest" time="0.005"/>
+  <testcase classname="com.project.Testing" name="phoneNumberFailTest" time="0.009"/>
   <testcase classname="com.project.Testing" name="phoneNumberPassTest" time="0.005"/>
-  <testcase classname="com.project.Testing" name="lastNameFailTest" time="0.004"/>
-  <testcase classname="com.project.Testing" name="addressPassTest" time="0.004"/>
-  <testcase classname="com.project.Testing" name="lastNamePassTest" time="0.004"/>
+  <testcase classname="com.project.Testing" name="lastNameFailTest" time="0.011"/>
+  <testcase classname="com.project.Testing" name="addressPassTest" time="0.005"/>
+  <testcase classname="com.project.Testing" name="lastNamePassTest" time="0.009"/>
 </testsuite>

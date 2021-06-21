@@ -6,7 +6,7 @@ derived_file_type:
 threadsafe: True
 auto_id_policy: default
 beta_settings:
-  'source_reference': 'https://github.com/MALKARAJ-FULLCREATIVE/new-contact-management-system.git#fba8ddab5424c53dd6e3a003ca0b4b8c49d20b44'
+  'source_reference': 'https://github.com/MALKARAJ-FULLCREATIVE/new-contact-management-system.git#46eef184e0373e9715800c8c5e0101fd6b5ba1fe'
 api_version: 'user_defined'
 handlers:
 - url: (/.*\.js)
@@ -36,67 +36,7 @@ handlers:
   login: optional
   secure: optional
   expiration: 1m
-- url: /
-  script: unused
-  login: optional
-  secure: optional
-- url: /_ah/.*
-  script: unused
-  login: optional
-  secure: optional
-- url: /contact
-  script: unused
-  login: optional
-  secure: optional
-- url: /cron/destruction
-  script: unused
-  login: optional
-  secure: optional
-- url: /register
-  script: unused
-  login: optional
-  secure: optional
-- url: /enqueue
-  script: unused
-  login: optional
-  secure: optional
-- url: /upload
-  script: unused
-  login: optional
-  secure: optional
-- url: /logout
-  script: unused
-  login: optional
-  secure: optional
-- url: /hello
-  script: unused
-  login: optional
-  secure: optional
-- url: /user
-  script: unused
-  login: optional
-  secure: optional
-- url: .*\.jsp
-  script: unused
-  login: optional
-  secure: optional
-- url: /.*/
-  script: unused
-  login: optional
-  secure: optional
-- url: /contact/.*
-  script: unused
-  login: optional
-  secure: optional
-- url: /google
-  script: unused
-  login: optional
-  secure: optional
-- url: /serve
-  script: unused
-  login: optional
-  secure: optional
-- url: /loginpage
+- url: /.*
   script: unused
   login: optional
   secure: optional

@@ -71,7 +71,10 @@ public class RegistrationPage extends HttpServlet {
 
 		response.setContentType("application/json");
         //response.setHeader("Access-Control-Allow-Origin","*");
-        response.addHeader("Access-Control-Allow-Origin","https://georgefulltraining12.uc.r.appspot.com/");  
+        response.addHeader("Access-Control-Allow-Origin","https://georgefulltraining12.uc.r.appspot.com/");
+
+        
+          
 
 		StringBuffer jb = new StringBuffer();
 		String line = null;
@@ -107,7 +110,8 @@ public class RegistrationPage extends HttpServlet {
 					JSONObject reqObj=new JSONObject();
 					reqObj.put("email", email);
 					reqObj.put("password", pwd);
-					req.setPayload(reqObj.toString().getBytes());
+                
+                    req.setPayload(reqObj.toString().getBytes());
 					HTTPResponse res = fetcher.fetch(req);
          
                     

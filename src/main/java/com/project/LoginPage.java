@@ -46,25 +46,7 @@ public class LoginPage extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-
-        HttpSession session = req.getSession(false);
-
-        log.info("inside doFiter() ");
-
-        if(session==null)
-        {
-            res.sendRedirect("/loginpage");
-        }
-        else
-        {
-             res.sendRedirect("/");
-        }
-
-    }
+  
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
