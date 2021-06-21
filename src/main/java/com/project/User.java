@@ -41,7 +41,7 @@ public class User {
 		this.active=true;
 		this.image="null.png";
         this.isDeleted=false;
-		this.user_id=UUID. randomUUID().toString();
+		//this.user_id=UUID. randomUUID().toString();
 	  	  DateTime now = new DateTime();
 	  	   Date millis=new Date(now.getMillis());
 			this.createdDate=millis;
