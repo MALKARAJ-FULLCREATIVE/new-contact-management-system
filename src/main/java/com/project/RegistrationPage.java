@@ -2,7 +2,9 @@ package com.project;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -127,10 +129,19 @@ public class RegistrationPage extends HttpServlet {
 			
 		        	            if(origin!=null &&origin.equals("https://malkarajtraining12.uc.r.appspot.com"))
 										{
-								              final String uri="https://georgefulltraining12.uc.r.appspot.com/register";
-								              URL url=new URL(uri); 
-											  HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
-									req.addHeader(new HTTPHeader("Authorization", BCrypt.hashpw(SyncApp.sentKey,BCrypt.gensalt(10))));
+											final String uri = "https://georgefulltraining12.uc.r.appspot.com/register";
+											URL url = new URL(uri);
+											// HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
+											HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+											conn.setDoOutput(true);
+											conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+											conn.setRequestProperty("Accept", "application/json");
+											// Set HTTP request method.
+											conn.setRequestMethod("POST");
+											conn.setConnectTimeout(2);
+											
+								//	req.addHeader(new HTTPHeader("Authorization", BCrypt.hashpw(SyncApp.sentKey,BCrypt.gensalt(10))));
                                 // req.addHeader(new HTTPHeader("Origin","https://georgefulltraining12.uc.r.appspot.com"));
                                   
                                 JSONObject reqObj=new JSONObject();
@@ -138,8 +149,13 @@ public class RegistrationPage extends HttpServlet {
 											  reqObj.put("email", email);
 											  reqObj.put("password", pwd);
 											  reqObj.put("user_id", user.getUser_id());
-											  req.setPayload(reqObj.toString().getBytes());
-											  obj1=SyncApp.sentRequest(req);
+											  
+											  OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+											  writer.write(reqObj.toString());
+											  writer.close();
+											  
+											//  req.setPayload(reqObj.toString().getBytes());
+											  //obj1=SyncApp.sentRequest(req);
 											  if(obj1.get("success").toString().equals("true"))
 												{
 												log.info("User succesfully registered in cross domain");
