@@ -74,7 +74,8 @@ public class RegistrationPage extends HttpServlet {
 
 		response.setContentType("application/json");
         //response.setHeader("Access-Control-Allow-Origin","*");
-        response.addHeader("Access-Control-Allow-Origin","https://georgefulltraining12.uc.r.appspot.com/");
+        response.addHeader("Access-Control-Allow-Origin","*"); //george
+
 
         
           
@@ -100,13 +101,13 @@ public class RegistrationPage extends HttpServlet {
 		
 		UUID id= UUID.randomUUID();
 		
-		if(origin.equals("https://malkarajtraining12.uc.r.appspot.com") || origin.equals("http://localhost:8080"))
+		if(origin!=null && (origin.equals("https://malkarajtraining12.uc.r.appspot.com") || origin.equals("http://localhost:8080")))
 		{
 		user.setUser_id(id.toString());
 		}
 		else
 		{
-		String user_id=jsonobject.get("userId").toString();
+		String user_id=jsonobject.get("user_id").toString();
 		user.setUser_id(user_id.toString());
 
 		            }
@@ -124,20 +125,21 @@ public class RegistrationPage extends HttpServlet {
 			
 			
 			
-			if(origin.equals("https://malkarajtraining12.uc.r.appspot.com"))
+		        	            if(origin!=null &&origin.equals("https://malkarajtraining12.uc.r.appspot.com"))
 										{
 								              final String uri="https://georgefulltraining12.uc.r.appspot.com/register";
 								              URL url=new URL(uri); 
 											  HTTPRequest req = new HTTPRequest(url, HTTPMethod.POST);
-											  req.addHeader(new HTTPHeader("Authorization", BCrypt.hashpw(SyncApp.sentKey,BCrypt.gensalt(10))));
-											  JSONObject reqObj=new JSONObject();
+									req.addHeader(new HTTPHeader("Authorization", BCrypt.hashpw(SyncApp.sentKey,BCrypt.gensalt(10))));
+                                // req.addHeader(new HTTPHeader("Origin","https://georgefulltraining12.uc.r.appspot.com"));
+                                  
+                                JSONObject reqObj=new JSONObject();
 											 
-											  
 											  reqObj.put("email", email);
 											  reqObj.put("password", pwd);
 											  reqObj.put("user_id", user.getUser_id());
 											  req.setPayload(reqObj.toString().getBytes());
-											  obj1=SyncAppFunc.register(req);
+											  obj1=SyncApp.sentRequest(req);
 											  if(obj1.get("success").toString().equals("true"))
 												{
 												log.info("User succesfully registered in cross domain");

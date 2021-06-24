@@ -51,8 +51,10 @@ function register()
 		
 		xhr.onload = function() {
 
+			
+			console.log("response text:"+this.responseText);
 			var data=  JSON.parse(this.responseText);
-        
+           console.log("data:"+data);
             
 
 

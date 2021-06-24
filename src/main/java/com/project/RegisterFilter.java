@@ -18,49 +18,52 @@ import org.mindrot.jbcrypt.BCrypt;
 @WebFilter("/RegisterFilter")
 public class RegisterFilter implements Filter {
 
-static Logger logger = Logger.getLogger("logger");
+static Logger log = Logger.getLogger("logger");
 public RegisterFilter() {
 }
 
 
 public void destroy() {
 }
-
-
 public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    
+
     HttpServletRequest req = (HttpServletRequest) request;
     HttpServletResponse res = (HttpServletResponse) response;
     if(req.getMethod().equalsIgnoreCase("POST"))
     {
 
         
-SyncApp sync= new SyncApp();
-String Origin=req.getHeader("Origin");
 
-        if(Origin.equals("http://localhost:8080") || Origin.equals("https://malkarajtraining12.uc.r.appspot.com"))
+String Origin=req.getHeader("Origin");
+// String appId=req.getHeader("X-Appengine-Inbound-Appid");
+// log.info(appId);
+
+        if(Origin!=null && (Origin.equals("http://localhost:8080") || Origin.equals("https://malkarajtraining12.uc.r.appspot.com")))
         {
-            logger.info("register API request from same-origin");
+            log.info("register API request from same-origin");
             chain.doFilter(request, response);
 
         
 }
-else
+else 
 {
 
             String token=req.getHeader("Authorization");
-            if(BCrypt.checkpw(SyncApp.receiveKey, token))
+            //log.info("token :"+token);
+
+            if(token!=null &&  BCrypt.checkpw(SyncApp.receiveKey, token))
             {
-                logger.info("Authorization succesfull");
+                log.info("Authorization succesfull");
                 chain.doFilter(request, response);
             }
             else
             {
-                logger.severe("register API request from unknown Origin :"+ Origin);
+                log.severe("register API request from unknown Origin ");
                 res.sendError(HttpServletResponse.SC_FORBIDDEN);
             }
             
         }
+        
 
     }
     else
@@ -71,7 +74,6 @@ else
 
 
 }
-
 
 public void init(FilterConfig fConfig) throws ServletException {
 }
