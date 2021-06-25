@@ -6,7 +6,7 @@ derived_file_type:
 threadsafe: True
 auto_id_policy: default
 beta_settings:
-  'source_reference': 'https://github.com/MALKARAJ-FULLCREATIVE/new-contact-management-system.git#a4772502cad525b5d1844388ed412446302b1a34'
+  'source_reference': 'https://github.com/MALKARAJ-FULLCREATIVE/new-contact-management-system.git#530cbec6217dfd81ea510cb431f69a1ae2317d1f'
 api_version: 'user_defined'
 handlers:
 - url: (/.*\.js)
